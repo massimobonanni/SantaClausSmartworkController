@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31815.197
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCSC.ElfWeb", "SCSC.ElfWeb\SCSC.ElfWeb.csproj", "{06835259-B312-4CD9-80A1-7252ECE2EEBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCSC.ElfWeb", "SCSC.ElfWeb\SCSC.ElfWeb.csproj", "{06835259-B312-4CD9-80A1-7252ECE2EEBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCSC.AdminWeb", "SCSC.AdminWeb\SCSC.AdminWeb.csproj", "{C3A603D5-F970-42DF-B309-5BC610842DB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCSC.AdminWeb", "SCSC.AdminWeb\SCSC.AdminWeb.csproj", "{C3A603D5-F970-42DF-B309-5BC610842DB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCSC.APIClient", "SCSC.APIClient\SCSC.APIClient.csproj", "{E1D48A1B-429F-4994-A75B-DE301378485D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCSC.APIClient", "SCSC.APIClient\SCSC.APIClient.csproj", "{E1D48A1B-429F-4994-A75B-DE301378485D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCSC.Functions", "SCSC.Functions\SCSC.Functions.csproj", "{17FE15A5-3B0B-40ED-8ACF-FE6CD56C307F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCSC.ElfSimulator", "SCSC.ElfSimulator\SCSC.ElfSimulator.csproj", "{4914AE94-F1FA-4C9D-9AB9-3CC36D7E1CB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCSC.ElfSimulator", "SCSC.ElfSimulator\SCSC.ElfSimulator.csproj", "{4914AE94-F1FA-4C9D-9AB9-3CC36D7E1CB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCSC.Core", "SCSC.Core\SCSC.Core.csproj", "{0085EF8B-D0A0-4279-8419-24F6265DC907}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCSC.PlatformFunctions", "SCSC.PlatformFunctions\SCSC.PlatformFunctions.csproj", "{D6EE22DE-A085-4705-B46C-6E9E3619B7DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,14 +33,18 @@ Global
 		{E1D48A1B-429F-4994-A75B-DE301378485D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1D48A1B-429F-4994-A75B-DE301378485D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1D48A1B-429F-4994-A75B-DE301378485D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{17FE15A5-3B0B-40ED-8ACF-FE6CD56C307F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17FE15A5-3B0B-40ED-8ACF-FE6CD56C307F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17FE15A5-3B0B-40ED-8ACF-FE6CD56C307F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17FE15A5-3B0B-40ED-8ACF-FE6CD56C307F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4914AE94-F1FA-4C9D-9AB9-3CC36D7E1CB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4914AE94-F1FA-4C9D-9AB9-3CC36D7E1CB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4914AE94-F1FA-4C9D-9AB9-3CC36D7E1CB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4914AE94-F1FA-4C9D-9AB9-3CC36D7E1CB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0085EF8B-D0A0-4279-8419-24F6265DC907}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0085EF8B-D0A0-4279-8419-24F6265DC907}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0085EF8B-D0A0-4279-8419-24F6265DC907}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0085EF8B-D0A0-4279-8419-24F6265DC907}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6EE22DE-A085-4705-B46C-6E9E3619B7DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6EE22DE-A085-4705-B46C-6E9E3619B7DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6EE22DE-A085-4705-B46C-6E9E3619B7DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6EE22DE-A085-4705-B46C-6E9E3619B7DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
