@@ -1,0 +1,26 @@
+﻿{
+  "apiBaseUrl": "",
+  "elfs": [
+    {
+      "id": "Alabaster_Snowball",
+      "name": "Alabaster Snowball",
+      "breakDuration": 30,
+      "operationDurationMin": 60,
+      "operationDurationMax": 300
+    },
+    {
+      "id": "Bushy_Evergreen",
+      "name": "Bushy Evergreen",
+      "breakDuration": 15,
+      "operationDurationMin": 30,
+      "operationDurationMax": 600
+    },
+    {
+      "id": "Minstix_Pepper",
+      "name": "Minstix Pepper",
+      "breakDuration": 60,
+      "operationDurationMin": 60,
+      "operationDurationMax": 600
+    }
+  ]
+}

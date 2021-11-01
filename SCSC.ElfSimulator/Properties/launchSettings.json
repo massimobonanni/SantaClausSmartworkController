@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SCSC.ElfSimulator": {
+      "commandName": "Project",
+      "commandLineArgs": "-f \"D:\\Sviluppo\\SantaClausSmartworkController\\SCSC.ElfSimulator\\simpleConfig.json\""
+    }
+  }
+}
