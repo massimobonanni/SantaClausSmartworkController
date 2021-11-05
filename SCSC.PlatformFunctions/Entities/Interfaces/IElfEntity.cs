@@ -9,6 +9,7 @@ namespace SCSC.PlatformFunctions.Entities.Interfaces
 {
     public interface IElfEntity
     {
-        void PackagingStarted(PackagingOperationModel package);
+        void PackageStarted(PackageStartedModel package);
+        void PackageEnded(PackageEndedModel package);
     }
 }
