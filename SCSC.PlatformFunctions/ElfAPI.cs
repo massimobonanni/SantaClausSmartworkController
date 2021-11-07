@@ -40,11 +40,11 @@ namespace SCSC.PlatformFunctions
             bodyType: typeof(PackageStartedModel),
             Summary = "Packaging model used to signal the operation",
             Description = "Packaging model used to signal the operation")]
-        [OpenApiParameter("elfId",Description ="Identifier of the elf that starts the package",
-            Required =true,In =ParameterLocation.Path)]
-        [OpenApiRequestBody(contentType:"json",bodyType:typeof(PackageStartedModel),Description ="Package information")]
-        [FunctionName(nameof(PackagingStarted))]
-        public async Task<IActionResult> PackagingStarted(
+        [OpenApiParameter("elfId", Description = "Identifier of the elf that starts the package",
+            Required = true, In = ParameterLocation.Path)]
+        [OpenApiRequestBody(contentType: "json", bodyType: typeof(PackageStartedModel), Description = "Package information")]
+        [FunctionName(nameof(PackageStarted))]
+        public async Task<IActionResult> PackageStarted(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "elfs/{elfId}/packagestarted")] HttpRequest req,
             string elfId,
             [DurableClient] IDurableEntityClient client,
@@ -73,8 +73,8 @@ namespace SCSC.PlatformFunctions
         [OpenApiParameter("elfId", Description = "Identifier of the elf that finishes the package",
             Required = true, In = ParameterLocation.Path)]
         [OpenApiRequestBody(contentType: "json", bodyType: typeof(PackageEndedModel), Description = "Package information")]
-        [FunctionName(nameof(PackagingEnded))]
-        public async Task<IActionResult> PackagingEnded(
+        [FunctionName(nameof(PackageEnded))]
+        public async Task<IActionResult> PackageEnded(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "elfs/{elfId}/packageended")] HttpRequest req,
             string elfId,
             [DurableClient] IDurableEntityClient client,
@@ -88,6 +88,41 @@ namespace SCSC.PlatformFunctions
             await client.SignalEntityAsync<IElfEntity>(entityId, d => d.PackageEnded(packagingModel));
 
             return new OkObjectResult(packagingModel);
+        }
+
+        [OpenApiOperation(operationId: "createelf",
+            Summary = "Add a new elf in the platform.",
+            Description = "Use this API to create a new elf in the platform.",
+            Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest,
+            bodyType: typeof(string),
+            contentType: "json",
+            Description = "You receive and error message if the elf id is empty or composed by only spaces",
+            Summary = "Return bad request if the elf id for the creation is not valid")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK,
+            contentType: "json",
+            bodyType: typeof(string),
+            Summary = "Return the elf id created",
+            Description = "If the operation is succeeded, it return the elf id created.")]
+        [OpenApiRequestBody(contentType: "json", bodyType: typeof(CreateElfModel), Description = "Information about the elf to create")]
+        [FunctionName(nameof(CreateElf))]
+        public async Task<IActionResult> CreateElf(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "elfs")] HttpRequest req,
+            [DurableClient] IDurableEntityClient client,
+            ILogger logger)
+        {
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var elfModel = JsonConvert.DeserializeObject<CreateElfModel>(requestBody);
+
+            if (string.IsNullOrWhiteSpace(elfModel.ElfId))
+                return new BadRequestObjectResult("Elf ID is not valid");
+
+            var entityId = await _entityfactory.GetEntityIdAsync(elfModel.ElfId, default);
+
+            await client.SignalEntityAsync<IElfEntity>(entityId, d => d.Configure(elfModel.Configuration));
+
+            return new OkObjectResult(elfModel.ElfId);
         }
     }
 }
