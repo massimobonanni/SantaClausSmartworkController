@@ -163,5 +163,53 @@ namespace SCSC.PlatformFunctions
 
             return new OkObjectResult(elfId);
         }
+
+        #region Open API Definition
+        [OpenApiOperation(operationId: "getelfs",
+            Summary = "Get the list of elfs.",
+            Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK,
+            contentType: "json",
+            bodyType: typeof(List<ElfInfoModel>),
+            Summary = "The full list of elfs")]
+        #endregion Open API Definition
+        [FunctionName(nameof(GetElfs))]
+        public async Task<IActionResult> GetElfs(
+           [HttpTrigger(AuthorizationLevel.Function, "get", Route = "elfs")] HttpRequest req,
+           [DurableClient] IDurableEntityClient client,
+           ILogger logger)
+        {
+            var result = new List<ElfInfoModel>();
+
+            EntityQuery queryDefinition = new EntityQuery()
+            {
+                PageSize = 100,
+                FetchState = true,
+
+            };
+
+            var elfEntityNames = await this._entityfactory.GetEntityNames(default);
+
+            do
+            {
+                EntityQueryResult queryResult = await client.ListEntitiesAsync(queryDefinition, default);
+
+                foreach (var item in queryResult.Entities)
+                {
+                    if (elfEntityNames.Contains(item.EntityId.EntityName))
+                    {
+                        ElfInfoModel model = item.ToElfInfoModel();
+                        // if you want to add other filters to you method
+                        // you can add them here before adding the model to the return list
+                        result.Add(model);
+                    }
+                }
+
+                queryDefinition.ContinuationToken = queryResult.ContinuationToken;
+            } while (queryDefinition.ContinuationToken != null);
+
+            return new OkObjectResult(result);
+        }
     }
 }
