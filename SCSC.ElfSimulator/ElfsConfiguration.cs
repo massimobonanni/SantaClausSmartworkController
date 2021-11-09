@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace SCSC.ElfSimulator
 {
-    internal class ElfsConfiguration
+    public class ElfsConfiguration
     {
         [JsonPropertyName("elfs")]
         public IEnumerable<ElfConfiguration> Elfs { get; set; }

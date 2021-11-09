@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SCSC.Core.Models;
 using SCSC.PlatformFunctions.Entities.Interfaces;
+using SCSC.PlatformFunctions.Filters;
 using SCSC.PlatformFunctions.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -174,6 +175,11 @@ namespace SCSC.PlatformFunctions
             contentType: "json",
             bodyType: typeof(List<ElfInfoModel>),
             Summary = "The full list of elfs")]
+        [OpenApiParameter(name: "name",
+            In = ParameterLocation.Query,
+            Type = typeof(string),
+            Summary = "Filter elves by name.",
+            Description = "Retrieve only elves that have the value set in the name.")]
         #endregion Open API Definition
         [FunctionName(nameof(GetElfs))]
         public async Task<IActionResult> GetElfs(
@@ -182,6 +188,8 @@ namespace SCSC.PlatformFunctions
            ILogger logger)
         {
             var result = new List<ElfInfoModel>();
+
+            var filters = GetElfsFilters.CreateFromHttpRequest(req);
 
             EntityQuery queryDefinition = new EntityQuery()
             {
@@ -200,10 +208,9 @@ namespace SCSC.PlatformFunctions
                 {
                     if (elfEntityNames.Contains(item.EntityId.EntityName))
                     {
-                        ElfInfoModel model = item.ToElfInfoModel();
-                        // if you want to add other filters to you method
-                        // you can add them here before adding the model to the return list
-                        result.Add(model);
+                        ElfInfoModel elf = item.ToElfInfoModel();
+                        if (filters.AreFiltersVerified(elf))
+                            result.Add(elf);
                     }
                 }
 
@@ -239,7 +246,7 @@ namespace SCSC.PlatformFunctions
            [DurableClient] IDurableEntityClient client,
            ILogger logger)
         {
-            var elfEntityId = await this._entityfactory.GetEntityIdAsync(elfId,default);
+            var elfEntityId = await this._entityfactory.GetEntityIdAsync(elfId, default);
 
             EntityStateResponse<JObject> entity = await client.ReadEntityStateAsync<JObject>(elfEntityId);
             if (entity.EntityExists)
