@@ -13,6 +13,6 @@ namespace SCSC.PlatformFunctions.Services.Interfaces
         Task<EntityId> GetEntityIdAsync(string elfId, CancellationToken token);
         Task<string> GetEntityNameAsync(string elfId, CancellationToken token);
 
-        Task<IEnumerable<string>> GetEntityNames(CancellationToken token);
+        Task<IEnumerable<string>> GetEntityNamesAsync(CancellationToken token);
     }
 }

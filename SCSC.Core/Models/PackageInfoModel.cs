@@ -18,14 +18,14 @@ namespace SCSC.Core.Models
         [JsonProperty("kidName")]
         public string KidName { get; set; }
 
-        public TimeSpan? Duration
+        public double? DurationInSec
         {
             get
             { 
                 if (!this.EndTimestamp.HasValue)
                     return null;
 
-                return this.EndTimestamp.Value.Subtract(this.StartTimestamp);
+                return this.EndTimestamp.Value.Subtract(this.StartTimestamp).TotalSeconds;
             }
         }
     }

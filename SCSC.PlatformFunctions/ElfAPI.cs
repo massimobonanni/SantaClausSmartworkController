@@ -8,6 +8,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SCSC.Core.Models;
 using SCSC.PlatformFunctions.Entities.Interfaces;
 using SCSC.PlatformFunctions.Services.Interfaces;
@@ -189,7 +190,7 @@ namespace SCSC.PlatformFunctions
 
             };
 
-            var elfEntityNames = await this._entityfactory.GetEntityNames(default);
+            var elfEntityNames = await this._entityfactory.GetEntityNamesAsync(default);
 
             do
             {
@@ -210,6 +211,44 @@ namespace SCSC.PlatformFunctions
             } while (queryDefinition.ContinuationToken != null);
 
             return new OkObjectResult(result);
+        }
+
+        #region Open API Definition
+        [OpenApiOperation(operationId: "getelf",
+            Summary = "Retrieve information about a specifc elf.",
+            Description = "Use this API to retrieve information for a specific elf identify by the id.",
+            Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK,
+            contentType: "json",
+            bodyType: typeof(ElfInfoModel),
+            Summary = "Return the elf information",
+            Description = "If the elf exists, the api returns the elf information.")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.NotFound,
+            contentType: "json",
+            bodyType: typeof(string),
+            Summary = "Return the elf id",
+            Description = "If the elf don't exist, the api returns the elf id.")]
+        [OpenApiParameter("elfId", Description = "Identifier of the elf to retrieve",
+            Required = true, In = ParameterLocation.Path)]
+        #endregion Open API Definition
+        [FunctionName(nameof(GetElf))]
+        public async Task<IActionResult> GetElf(
+           [HttpTrigger(AuthorizationLevel.Function, "get", Route = "elfs/{elfId}")] HttpRequest req,
+           string elfId,
+           [DurableClient] IDurableEntityClient client,
+           ILogger logger)
+        {
+            var elfEntityId = await this._entityfactory.GetEntityIdAsync(elfId,default);
+
+            EntityStateResponse<JObject> entity = await client.ReadEntityStateAsync<JObject>(elfEntityId);
+            if (entity.EntityExists)
+            {
+                var elf = entity.EntityState.ToElfInfoModel();
+                elf.Id = elfId;
+                return new OkObjectResult(elf);
+            }
+            return new NotFoundObjectResult(elfId);
         }
     }
 }

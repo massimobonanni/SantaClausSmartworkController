@@ -24,7 +24,7 @@ namespace SCSC.PlatformFunctions.Services
 
         private static IEnumerable<string> EntityNames = new List<string>() { nameof(ElfSenior) };
 
-        public Task<IEnumerable<string>> GetEntityNames(CancellationToken token)
+        public Task<IEnumerable<string>> GetEntityNamesAsync(CancellationToken token)
         {
             return Task.FromResult(EntityNames);
         }
