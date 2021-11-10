@@ -21,12 +21,18 @@ namespace SCSC.Core.Models
         public double? DurationInSec
         {
             get
-            { 
+            {
                 if (!this.EndTimestamp.HasValue)
-                    return null;
+                    return DateTimeOffset.Now.Subtract(this.StartTimestamp).TotalSeconds;
 
                 return this.EndTimestamp.Value.Subtract(this.StartTimestamp).TotalSeconds;
             }
         }
+
+        public bool IsOpen
+        {
+            get => !this.EndTimestamp.HasValue;
+        }
+
     }
 }

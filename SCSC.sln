@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2A2A1C92
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCSC.Core.Test", "Tests\SCSC.Core.Test\SCSC.Core.Test.csproj", "{34E105F0-7708-44B3-A7CB-3418C345AB50}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCSC.PlatformFunctions.Test", "Tests\SCSC.PlatformFunctions.Test\SCSC.PlatformFunctions.Test.csproj", "{D96035F1-0F33-4161-A50D-169B9427EDAA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,12 +55,17 @@ Global
 		{34E105F0-7708-44B3-A7CB-3418C345AB50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34E105F0-7708-44B3-A7CB-3418C345AB50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34E105F0-7708-44B3-A7CB-3418C345AB50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D96035F1-0F33-4161-A50D-169B9427EDAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D96035F1-0F33-4161-A50D-169B9427EDAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D96035F1-0F33-4161-A50D-169B9427EDAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D96035F1-0F33-4161-A50D-169B9427EDAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{34E105F0-7708-44B3-A7CB-3418C345AB50} = {2A2A1C92-C70D-4328-99E8-2348B43B946F}
+		{D96035F1-0F33-4161-A50D-169B9427EDAA} = {2A2A1C92-C70D-4328-99E8-2348B43B946F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {15C09BC5-040F-4F7F-936F-FFAD410C3AE0}

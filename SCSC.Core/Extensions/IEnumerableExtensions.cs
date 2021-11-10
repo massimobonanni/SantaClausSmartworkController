@@ -25,5 +25,18 @@ namespace System.Collections.Generic
 
             return speed;
         }
+
+        public static IEnumerable<PackageInfoModel> ExtractOldItems(this IEnumerable<PackageInfoModel> packages, 
+            TimeSpan oldItemTimeThreshold)
+        {
+            if (packages == null)
+                throw new NullReferenceException(nameof(packages));
+
+            var oldPackages = packages
+                .Where(p => p.StartTimestamp< DateTimeOffset.Now.Subtract(oldItemTimeThreshold))
+                .Where(p => !p.IsOpen);
+                        
+            return oldPackages;
+        }
     }
 }

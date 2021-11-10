@@ -1,11 +1,22 @@
 {
-    "version": "2.0",
-    "logging": {
-        "applicationInsights": {
-            "samplingSettings": {
-                "isEnabled": true,
-                "excludedTypes": "Request"
-            }
-        }
+  "version": "2.0",
+  "logging": {
+    "applicationInsights": {
+      "logLevel": {
+        "default": "Information",
+        "Function": "Information",
+        "Host.Results": "Error",
+        "Host.Aggregator": "Error"
+      },
+      "samplingSettings": {
+        "isEnabled": true,
+        "excludedTypes": "Request"
+      }
     }
+  },
+  "extensions": {
+    "durableTask": {
+      "hubName": "SCSCHub"
+    }
+  }
 }
