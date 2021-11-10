@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCSC.Core", "SCSC.Core\SCSC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCSC.PlatformFunctions", "SCSC.PlatformFunctions\SCSC.PlatformFunctions.csproj", "{D6EE22DE-A085-4705-B46C-6E9E3619B7DD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2A2A1C92-C70D-4328-99E8-2348B43B946F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCSC.Core.Test", "Tests\SCSC.Core.Test\SCSC.Core.Test.csproj", "{34E105F0-7708-44B3-A7CB-3418C345AB50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,9 +49,16 @@ Global
 		{D6EE22DE-A085-4705-B46C-6E9E3619B7DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6EE22DE-A085-4705-B46C-6E9E3619B7DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6EE22DE-A085-4705-B46C-6E9E3619B7DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34E105F0-7708-44B3-A7CB-3418C345AB50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34E105F0-7708-44B3-A7CB-3418C345AB50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34E105F0-7708-44B3-A7CB-3418C345AB50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34E105F0-7708-44B3-A7CB-3418C345AB50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{34E105F0-7708-44B3-A7CB-3418C345AB50} = {2A2A1C92-C70D-4328-99E8-2348B43B946F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {15C09BC5-040F-4F7F-936F-FFAD410C3AE0}
