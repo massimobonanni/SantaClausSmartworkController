@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SCSC.Core.Models;
 using SCSC.PlatformFunctions.Entities.Interfaces;
+using SCSC.PlatformFunctions.Orchestrators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,9 +88,14 @@ namespace SCSC.PlatformFunctions.Entities
 
             if (packagesToRemove.Any())
             {
-                this.logger.LogInformation("Removing old packages");
-                // here put the orchestrator call to save package in db
-
+                this.logger.LogInformation($"Calling orchestrator {nameof(PackageArchiver.ArchivePackage)}");
+                var packageArchive = new PackageArchiver.PackageArchiveInfo()
+                {
+                    ElfId = Entity.Current.EntityKey,
+                    ElfEntityName = Entity.Current.EntityName,
+                    Packages = packagesToRemove
+                };
+                Entity.Current.StartNewOrchestration(nameof(PackageArchiver.ArchivePackage), packageArchive);
                 this.Packages.RemoveAll(p => packagesToRemove.Contains(p));
             }
 
