@@ -10,6 +10,9 @@ namespace SCSC.ElfSimulator
 
         [JsonPropertyName("apiBaseUrl")]
         public string ApiBaseUrl { get; set; }
+        
+        [JsonPropertyName("apiKey")]
+        public string ApiKey { get; set; }
     }
 
     public class ElfConfiguration
@@ -21,13 +24,18 @@ namespace SCSC.ElfSimulator
         public string Name { get; set; }
 
         [JsonPropertyName("operationDurationMin")]
-        public int OperationDurationMinInSec { get; set; }
+        public int OperationDurationMinInSec { get; set; } = 60;
 
         [JsonPropertyName("operationDurationMax")]
-        public int OperationDurationMaxInSec { get; set; }
+        public int OperationDurationMaxInSec { get; set; } = 300;
 
         [JsonPropertyName("breakDuration")]
         public int BreakDurationMaxInSec { get; set; } = 30;
 
+        [JsonPropertyName("startWorkTime")]
+        public string StartWorkTime { get; set; } = "09:00:00";
+
+        [JsonPropertyName("endWorkTime")]
+        public string EndWorkTime { get; set; } = "18:00:00";
     }
 }

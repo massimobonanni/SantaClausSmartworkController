@@ -1,4 +1,7 @@
 ﻿using CommandLine;
+using SCSC.APIClient;
+using SCSC.Core.Models;
+using SCSC.ElfSimulator.Fakers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,6 +17,8 @@ namespace SCSC.ElfSimulator
         private static Parameters _parameters;
 
         private static Random rand = new Random(DateTime.Now.Millisecond);
+
+        private static ElfsRestClient restClient;
 
         static async Task Main(string[] args)
         {
@@ -32,6 +37,9 @@ namespace SCSC.ElfSimulator
 
             WriteLog("Elf Simulator!");
             ElfsConfiguration config = await ReadConfigurationAsync(_parameters);
+
+            using var httpClient = new HttpClient();
+            restClient = new ElfsRestClient(httpClient, config.ApiBaseUrl, config.ApiKey);
 
             WriteLog("Press control-C to exit.");
 
@@ -103,29 +111,73 @@ namespace SCSC.ElfSimulator
             }
         }
 
+        private enum ElfStatus
+        {
+            Starting,
+            Break,
+            Packaging,
+            OutOfOffice
+        }
+
         private static async Task SimulateElfActivitiesAsync(ElfConfiguration elf, CancellationToken ct)
         {
-            
+            var elfStatus = ElfStatus.Starting;
+            var startJobTime = TimeSpan.Parse(elf.StartWorkTime);
+            var endJobTime = TimeSpan.Parse(elf.EndWorkTime);
+
+            WriteLog($"{DateTime.Now} > Elf {elf.Name} is starting its job", ConsoleColor.Cyan);
             var startupDelay = rand.Next(0, 10000);
             await Task.Delay(startupDelay, ct);
 
             while (!ct.IsCancellationRequested)
             {
+                PackageStartedModel packageStarted = null;
+                PackageEndedModel packageEnded = null;
                 try
                 {
-                    WriteLog($"{DateTime.Now} > Elf {elf.Name} Begin packaging",ConsoleColor.Green);
-                    var package = "Begin"; // here add payload for start operation
+                    if (DateTimeOffset.Now.TimeOfDay >= startJobTime && DateTimeOffset.Now.TimeOfDay <= endJobTime)
+                    {
+                        WriteLog($"{DateTime.Now} > Elf {elf.Name} begin packaging", ConsoleColor.Green);
+                        packageStarted = PackageFaker.PackageStarted();
+                        await restClient.PackageStartedAsync(elf.Id, packageStarted, default);
 
-                    var operationDuration = rand.Next(elf.OperationDurationMinInSec, elf.OperationDurationMaxInSec) * 1000;
-                    await Task.Delay(operationDuration, ct);
+                        elfStatus = ElfStatus.Packaging;
+                        var operationDuration = rand.Next(elf.OperationDurationMinInSec, elf.OperationDurationMaxInSec) * 1000;
+                        await Task.Delay(operationDuration, ct);
 
-                    WriteLog($"{DateTime.Now} > Elf {elf.Name} End packaging",ConsoleColor.Yellow);
-                    package = "End"; // here add payload for start operation
+                        WriteLog($"{DateTime.Now} > Elf {elf.Name} end packaging", ConsoleColor.Yellow);
+                        packageEnded = new PackageEndedModel()
+                        {
+                            PackageId = packageStarted.PackageId,
+                            Timestamp = DateTimeOffset.Now
+                        };
+                        await restClient.PackageEndedAsync(elf.Id, packageEnded, default);
+
+                        elfStatus = ElfStatus.Break;
+                        WriteLog($"{DateTime.Now} > Elf {elf.Name} is starting its break", ConsoleColor.Magenta);
+                    }
+                    else
+                    {
+                        if (elfStatus != ElfStatus.OutOfOffice)
+                        {
+                            elfStatus = ElfStatus.OutOfOffice;
+                            WriteLog($"{DateTime.Now} > Elf {elf.Name} is out of office", ConsoleColor.Red);
+                        }
+                    }
 
                     await Task.Delay(elf.BreakDurationMaxInSec * 1000, ct);
                 }
                 catch (TaskCanceledException)
                 {
+                    if (elfStatus == ElfStatus.Packaging)
+                    {
+                        packageEnded = new PackageEndedModel()
+                        {
+                            PackageId = packageStarted.PackageId,
+                            Timestamp = DateTimeOffset.Now
+                        };
+                        await restClient.PackageEndedAsync(elf.Id, packageEnded, default);
+                    }
                     break;
                 }
             }

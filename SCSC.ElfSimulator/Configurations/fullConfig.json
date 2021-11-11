@@ -1,0 +1,294 @@
+﻿{
+  "apiBaseUrl": "http://localhost:7071",
+  "elfs": [
+    {
+      "id": "alabaster_snowball",
+      "name": "Alabaster Snowball",
+      "operationDurationMin": 30,
+      "operationDurationMax": 180,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "20:00:00"
+    },
+    {
+      "id": "bushy_evergreen",
+      "name": "Bushy Evergreen",
+      "operationDurationMin": 10,
+      "operationDurationMax": 60,
+      "breakDuration": 15,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "20:00:00"
+    },
+    {
+      "id": "pepper_minstix",
+      "name": "Pepper Minstix",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "shinny_upatree",
+      "name": "Shinny Upatree",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "sugarplum_mary",
+      "name": "Sugarplum Mary",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "wunorse_openslae",
+      "name": "Wunorse Openslae",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "askasleikir",
+      "name": "Askasleikir",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "bjugnakraekir",
+      "name": "Bjugnakraekir",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "faldafeykir",
+      "name": "Faldafeykir",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "gattathefur",
+      "name": "Gattathefur",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "giljagaur",
+      "name": "Giljagaur",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "gluggagaegir",
+      "name": "Gluggagaegir",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "ketkrokur",
+      "name": "Ketkrokur",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "kertasnikir",
+      "name": "Kertasnikir",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "pottasleikir",
+      "name": "Pottasleikir",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "skyrjarmur",
+      "name": "Skyrjarmur",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "stekkjarstaur",
+      "name": "Stekkjarstaur",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "stufur",
+      "name": "Stufur",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "thvorusleikir",
+      "name": "Thvorusleikir",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "baggalutur",
+      "name": "Baggalutur",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "bjalmans_barnid",
+      "name": "Bjalmans Barnid",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "bjalminn_sjalfur",
+      "name": "Bjalminn Sjalfur",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "bitahaengir",
+      "name": "Bitahaengir",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "frodusleikir",
+      "name": "Frodusleikir",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "laekjaraegir",
+      "name": "Laekjaraegir",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "raudur",
+      "name": "Raudur",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "redda",
+      "name": "Redda",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "sledda",
+      "name": "Sledda",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "steingrimur",
+      "name": "Steingrimur",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "syrjusleikir",
+      "name": "Syrjusleikir",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "tifill",
+      "name": "Tifill",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    },
+    {
+      "id": "tutur",
+      "name": "Tutur",
+      "operationDurationMin": 60,
+      "operationDurationMax": 300,
+      "breakDuration": 30,
+      "startWorkTime": "09:00:00",
+      "endWorkTime": "18:00:00"
+    }
+  ]
+}
+

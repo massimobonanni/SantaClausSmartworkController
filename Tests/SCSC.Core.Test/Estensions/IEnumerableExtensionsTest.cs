@@ -16,16 +16,17 @@ namespace SCSC.Core.Test.Estensions
         {
             IEnumerable<PackageInfoModel> target = null;
 
-            Assert.Throws<NullReferenceException>(() => target.CalcuateAverageSpeed());
+            Assert.Throws<NullReferenceException>(() => target.CalcuateAverageSpeed(new TimeSpan(9, 0, 0), new TimeSpan(18, 0, 0)));
         }
 
         [Theory()]
         [MemberData(nameof(PackageInfoModelDataGenerator.GetPackagesForAverageSpeedWithTimeReference),
-            MemberType=typeof(PackageInfoModelDataGenerator))]
+            MemberType = typeof(PackageInfoModelDataGenerator))]
         public void CalculateAverageSpeed_CalcutateAverageSpeedWithTimeReference(
-            IEnumerable<PackageInfoModel> packages, TimeSpan timeReference, double expectedSpeed)
+            IEnumerable<PackageInfoModel> packages, DateTimeOffset calculationTime, TimeSpan timeReference,
+            TimeSpan startWorkTime, TimeSpan endWorkTime, double expectedSpeed)
         {
-            var actualSpeed = packages.CalcuateAverageSpeed(timeReference);
+            var actualSpeed = packages.CalcuateAverageSpeed(startWorkTime, endWorkTime, calculationTime, timeReference);
             Assert.Equal(expectedSpeed, actualSpeed);
         }
 
@@ -33,9 +34,10 @@ namespace SCSC.Core.Test.Estensions
         [MemberData(nameof(PackageInfoModelDataGenerator.GetPackagesForAverageSpeed),
             MemberType = typeof(PackageInfoModelDataGenerator))]
         public void CalculateAverageSpeed_CalcutateAverageSpeed(
-            IEnumerable<PackageInfoModel> packages, double expectedSpeed)
+            IEnumerable<PackageInfoModel> packages, DateTimeOffset calculationTime, 
+            TimeSpan startWorkTime, TimeSpan endWorkTime, double expectedSpeed)
         {
-            var actualSpeed = packages.CalcuateAverageSpeed();
+            var actualSpeed = packages.CalcuateAverageSpeed(startWorkTime, endWorkTime, calculationTime);
             Assert.Equal(expectedSpeed, actualSpeed);
         }
         #endregion

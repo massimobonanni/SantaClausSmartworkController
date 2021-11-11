@@ -15,9 +15,12 @@ namespace SCSC.Core.Test.DataGenerators
             {
                 new List<PackageInfoModel>()
                     {
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-20))
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-20))
                     },
+                DateTimeUtility.Create(14,0,0),
                 TimeSpan.FromHours(1),
+                new TimeSpan(9,0,0),
+                new TimeSpan(18,0,0),
                 1.0
             };
 
@@ -25,10 +28,13 @@ namespace SCSC.Core.Test.DataGenerators
             {
                 new List<PackageInfoModel>()
                     {
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-20)),
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-10))
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-20)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-10))
                     },
+                DateTimeUtility.Create(14,0,0),
                 TimeSpan.FromHours(1),
+                new TimeSpan(9,0,0),
+                new TimeSpan(18,0,0),
                 2.0
             };
 
@@ -36,11 +42,14 @@ namespace SCSC.Core.Test.DataGenerators
            {
                 new List<PackageInfoModel>()
                     {
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-20)),
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-10)),
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-30))
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-20)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-10)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-30))
                     },
+                DateTimeUtility.Create(14,0,0),
                 TimeSpan.FromHours(1),
+                new TimeSpan(9,0,0),
+                new TimeSpan(18,0,0),
                 3.0
            };
 
@@ -48,9 +57,12 @@ namespace SCSC.Core.Test.DataGenerators
             {
                 new List<PackageInfoModel>()
                     {
-                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeOffset.Now.AddMinutes(-20))
+                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-20))
                     },
+                DateTimeUtility.Create(14,0,0),
                 TimeSpan.FromHours(1),
+                new TimeSpan(9,0,0),
+                new TimeSpan(18,0,0),
                 0.0
             };
 
@@ -58,9 +70,12 @@ namespace SCSC.Core.Test.DataGenerators
             {
                 new List<PackageInfoModel>()
                     {
-                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeOffset.Now.AddMinutes(-20))
+                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-20))
                     },
+                DateTimeUtility.Create(14,0,0),
                 TimeSpan.FromMinutes(30),
+                new TimeSpan(9,0,0),
+                new TimeSpan(18,0,0),
                 0.0
             };
 
@@ -68,9 +83,12 @@ namespace SCSC.Core.Test.DataGenerators
             {
                 new List<PackageInfoModel>()
                     {
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-20))
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-20))
                     },
+                DateTimeUtility.Create(14,0,0),
                 TimeSpan.FromMinutes(30),
+                new TimeSpan(9,0,0),
+                new TimeSpan(18,0,0),
                 2.0
             };
 
@@ -78,9 +96,12 @@ namespace SCSC.Core.Test.DataGenerators
             {
                 new List<PackageInfoModel>()
                     {
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-40))
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-40))
                     },
+                DateTimeUtility.Create(14,0,0),
                 TimeSpan.FromMinutes(30),
+                new TimeSpan(9,0,0),
+                new TimeSpan(18,0,0),
                 0.0
             };
         }
@@ -91,8 +112,11 @@ namespace SCSC.Core.Test.DataGenerators
             {
                 new List<PackageInfoModel>()
                     {
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-30))
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-30))
                     },
+                DateTimeUtility.Create(14,0,0),
+                new TimeSpan(9,0,0),
+                new TimeSpan(18,0,0),
                 1.0
             };
 
@@ -100,9 +124,12 @@ namespace SCSC.Core.Test.DataGenerators
             {
                 new List<PackageInfoModel>()
                     {
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-20)),
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-10)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-20)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-10)),
                     },
+                DateTimeUtility.Create(14,0,0),
+                new TimeSpan(9,0,0),
+                new TimeSpan(18,0,0),
                 2.0
             };
 
@@ -110,9 +137,12 @@ namespace SCSC.Core.Test.DataGenerators
             {
                 new List<PackageInfoModel>()
                     {
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-20)),
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-1),600),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-20)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-1),600),
                     },
+                DateTimeUtility.Create(14,0,0),
+                new TimeSpan(9,0,0),
+                new TimeSpan(18,0,0),
                 1.0
             };
 
@@ -120,9 +150,12 @@ namespace SCSC.Core.Test.DataGenerators
             {
                 new List<PackageInfoModel>()
                     {
-                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddMinutes(-20)),
-                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeOffset.Now.AddMinutes(-10)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-20)),
+                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-10)),
                     },
+                DateTimeUtility.Create(14,0,0),
+                new TimeSpan(9,0,0),
+                new TimeSpan(18,0,0),
                 1.0
             };
 
@@ -130,9 +163,12 @@ namespace SCSC.Core.Test.DataGenerators
             {
                 new List<PackageInfoModel>()
                     {
-                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeOffset.Now.AddMinutes(-20)),
-                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeOffset.Now.AddMinutes(-10)),
+                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-20)),
+                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeUtility.Create(14,0,0).AddMinutes(-10)),
                     },
+                DateTimeUtility.Create(14,0,0),
+                new TimeSpan(9,0,0),
+                new TimeSpan(18,0,0),
                 0.0
             };
         }
