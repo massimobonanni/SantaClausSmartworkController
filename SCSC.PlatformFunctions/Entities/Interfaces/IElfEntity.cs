@@ -12,5 +12,7 @@ namespace SCSC.PlatformFunctions.Entities.Interfaces
         void PackageStarted(PackageStartedModel package);
         void PackageEnded(PackageEndedModel package);
         void Configure(ElfConfigurationModel config);
+
+        Task<double> GetHourProductivity();
     }
 }

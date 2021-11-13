@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using SCSC.Core.Models;
 using SCSC.PlatformFunctions.Entities;
+using SCSC.PlatformFunctions.Orchestrators;
 using SCSC.PlatformFunctions.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,15 @@ namespace SCSC.PlatformFunctions.Services
     {
         public Task<string> GetOrchestratorNameAsync(AlertType alertType, CancellationToken token)
         {
-            throw new NotImplementedException();
+            switch (alertType)
+            {
+                case AlertType.Productivity:
+                    return Task.FromResult(nameof(ProductivityAlertOrchestrator.ProductivityAlert));
+                case AlertType.Inactivity:
+                    return Task.FromResult(nameof(InactivityAlertOrchestrator.InactivityAlert));
+                default:
+                    throw new ArgumentException(nameof(alertType));
+            }
         }
     }
 }

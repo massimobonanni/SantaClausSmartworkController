@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using SCSC.Core.Models;
+using SCSC.PlatformFunctions.Orchestrators;
 using SCSC.PlatformFunctions.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,6 @@ namespace SCSC.PlatformFunctions
 
         //  API to implements
         //      api/alerts/{alertId}/cancel --> [POST] cancel an alert
-        //      api/alerts                  --> [POST] create an alert
 
         #region Open API Definition
         [OpenApiOperation(operationId: "getalerts",
@@ -139,6 +139,31 @@ namespace SCSC.PlatformFunctions
             var orchestratorId = await client.StartNewAsync<CreateAlertModel>(orchestratorName, alertModel);
 
             return new OkObjectResult(orchestratorId);
+        }
+
+        #region Open API Definition
+        [OpenApiOperation(operationId: "cancelalert",
+            Summary = "Cancel an alert for an elf.",
+            Description = "Use this API to cancel a running alert for a specific elf.",
+            Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK,
+            contentType: "json",
+            bodyType: typeof(string),
+            Summary = "Return the alert id cancelled",
+            Description = "If the operation is succeeded, it return the alert id cancelled.")]
+        [OpenApiRequestBody(contentType: "json", bodyType: typeof(CreateAlertModel), Description = "Information about the alert to create")]
+        #endregion Open API Definition
+        [FunctionName(nameof(CancelAlert))]
+        public async Task<IActionResult> CancelAlert(
+            [HttpTrigger(AuthorizationLevel.Function, "put", Route = "alerts/{alertId}/cancel")] HttpRequest req,
+            string alertId,
+            [DurableClient] IDurableOrchestrationClient client,
+            ILogger logger)
+        {
+            await client.RaiseEventAsync(alertId,AlertOrchestratorEvents.Cancel);
+
+            return new OkObjectResult(alertId);
         }
     }
 }

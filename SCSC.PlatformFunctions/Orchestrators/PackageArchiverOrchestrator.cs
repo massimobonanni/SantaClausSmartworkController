@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.WebJobs;
+﻿using Microsoft.Azure.Cosmos.Table;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Extensions.Logging;
 using SCSC.Core.Models;
@@ -10,40 +11,41 @@ using System.Threading.Tasks;
 
 namespace SCSC.PlatformFunctions.Orchestrators
 {
-    public class PackageArchiver
+    internal class PackageArchiverOrchestrator
     {
         public class PackageArchiveInfo
         {
             public string ElfId { get; set; }
             public string ElfEntityName { get; set; }
+            public string ElfName { get; set; }
             public IEnumerable<PackageInfoModel> Packages { get; set; }
         }
 
-        public class ArchivePackage
+        public class ArchivePackage : TableEntity
         {
             public ArchivePackage()
             {
 
             }
-            public ArchivePackage(string elfId, string elfEntityName, PackageInfoModel package)
+            public ArchivePackage(string elfId, string elfEntityName, string elfName, PackageInfoModel package)
             {
-                ElfId = elfId;
+                PartitionKey = elfId;
+                RowKey = package.PackageId;
                 ElfEntityName = elfEntityName;
                 EndTimestamp = package.EndTimestamp.HasValue ? package.EndTimestamp.Value.ToString("o") : string.Empty;
                 GiftDescription = package.GiftDescription;
                 KidName = package.KidName;
-                PackageId = package.PackageId;
                 StartTimestamp = package.StartTimestamp.ToString("O");
+                ElfName = elfName;
             }
 
-            public string PartitionKey { get => this.ElfId; }
-            public string RowKey { get => this.PackageId; }
             public string StartTimestamp { get; set; }
             public string EndTimestamp { get; set; }
-            public string PackageId { get; set; }
-            public string ElfId { get; set; }
+            public string PackageId { get => RowKey; }
+            public string ElfId { get => PartitionKey; }
             public string GiftDescription { get; set; }
             public string KidName { get; set; }
+            public string ElfName { get; set; }
             public string ElfEntityName { get; set; }
         }
 
@@ -53,16 +55,16 @@ namespace SCSC.PlatformFunctions.Orchestrators
             [OrchestrationTrigger] IDurableOrchestrationContext context,
             ILogger logger)
         {
-            logger.LogInformation($"[START ORCHESTRATOR] --> {nameof(PackageArchiver.ArchivePackage)}");
+            logger.LogInformation($"[START ORCHESTRATOR] --> {nameof(PackageArchiverOrchestrator.ArchivePackage)}");
             var packagesInfo = context.GetInput<PackageArchiveInfo>();
 
             try
             {
-                await context.CallActivityAsync(nameof(PackageArchiver.SavePackageToStorage), packagesInfo);
+                await context.CallActivityAsync(nameof(PackageArchiverOrchestrator.SavePackageToStorage), packagesInfo);
             }
             catch (System.Exception ex)
             {
-                logger.LogError(ex, $"Error during '{nameof(PackageArchiver.SavePackageToStorage)}' invocation", packagesInfo);
+                logger.LogError(ex, $"Error during '{nameof(PackageArchiverOrchestrator.SavePackageToStorage)}' invocation", packagesInfo);
             }
         }
 
@@ -71,13 +73,13 @@ namespace SCSC.PlatformFunctions.Orchestrators
             [Table("packagesArchive", Connection = "PackagesStorageAccount")] IAsyncCollector<ArchivePackage> outputTable,
             ILogger logger)
         {
-            logger.LogInformation($"[START ACTIVITY] --> {nameof(PackageArchiver.SavePackageToStorage)} for ${packagesInfo.ElfId} elf");
+            logger.LogInformation($"[START ACTIVITY] --> {nameof(PackageArchiverOrchestrator.SavePackageToStorage)} for ${packagesInfo.ElfId} elf");
 
             if (packagesInfo.Packages != null && packagesInfo.Packages.Any())
             {
                 foreach (var package in packagesInfo.Packages)
                 {
-                    var tablePackage = new ArchivePackage(packagesInfo.ElfId, packagesInfo.ElfEntityName, package);
+                    var tablePackage = new ArchivePackage(packagesInfo.ElfId, packagesInfo.ElfEntityName, packagesInfo.ElfName, package);
                     await outputTable.AddAsync(tablePackage);
                 }
             }

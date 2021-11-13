@@ -16,6 +16,7 @@ namespace SCSC.PlatformFunctions
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddScoped<IElfEntityFactory, DefaultElfEntityFactory>();
+            builder.Services.AddScoped<IAlertOrchestratorFactory, DefaultAlertOrchestratorFactory>();
         }
     }
 }

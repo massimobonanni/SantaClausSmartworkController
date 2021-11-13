@@ -79,6 +79,11 @@ namespace SCSC.PlatformFunctions.Entities
 
             await CleanPackagesAsync();
         }
+
+        public Task<double> GetHourProductivity()
+        {
+            throw new NotImplementedException();
+        }
         #endregion [ IElfEntity interface ]
 
         #region [ Internal Methods ]
@@ -88,14 +93,15 @@ namespace SCSC.PlatformFunctions.Entities
 
             if (packagesToRemove.Any())
             {
-                this.logger.LogInformation($"Calling orchestrator {nameof(PackageArchiver.ArchivePackage)}");
-                var packageArchive = new PackageArchiver.PackageArchiveInfo()
+                this.logger.LogInformation($"Calling orchestrator {nameof(PackageArchiverOrchestrator.ArchivePackage)}");
+                var packageArchive = new PackageArchiverOrchestrator.PackageArchiveInfo()
                 {
                     ElfId = Entity.Current.EntityKey,
                     ElfEntityName = Entity.Current.EntityName,
+                    ElfName = this.Name,
                     Packages = packagesToRemove
                 };
-                Entity.Current.StartNewOrchestration(nameof(PackageArchiver.ArchivePackage), packageArchive);
+                Entity.Current.StartNewOrchestration(nameof(PackageArchiverOrchestrator.ArchivePackage), packageArchive);
                 this.Packages.RemoveAll(p => packagesToRemove.Contains(p));
             }
 
@@ -106,5 +112,7 @@ namespace SCSC.PlatformFunctions.Entities
         [FunctionName(nameof(ElfSenior))]
         public static Task Run([EntityTrigger] IDurableEntityContext ctx, ILogger logger)
             => ctx.DispatchAsync<ElfSenior>(logger);
+
+
     }
 }
