@@ -7,10 +7,12 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using SCSC.Core.Models;
 using SCSC.PlatformFunctions.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -28,7 +30,6 @@ namespace SCSC.PlatformFunctions
         }
 
         //  API to implements
-        //      api/alerts/{alertId}        --> [GET] retrieve a specific alert
         //      api/alerts/{alertId}/cancel --> [POST] cancel an alert
         //      api/alerts                  --> [POST] create an alert
 
@@ -101,6 +102,43 @@ namespace SCSC.PlatformFunctions
             }
 
             return new NotFoundObjectResult("The alert doesn't exist");
+        }
+
+        #region Open API Definition
+        [OpenApiOperation(operationId: "createalert",
+            Summary = "Create a new alert for an elf.",
+            Description = "Use this API to create a new alert for a specific elf.",
+            Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest,
+            bodyType: typeof(string),
+            contentType: "json",
+            Description = "You receive an error message if the body of the request is not valid",
+            Summary = "Return bad request if the body request is not valid")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK,
+            contentType: "json",
+            bodyType: typeof(string),
+            Summary = "Return the alert id created",
+            Description = "If the operation is succeeded, it return the alert id created.")]
+        [OpenApiRequestBody(contentType: "json", bodyType: typeof(CreateAlertModel), Description = "Information about the alert to create")]
+        #endregion Open API Definition
+        [FunctionName(nameof(CreateAlert))]
+        public async Task<IActionResult> CreateAlert(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "alerts")] HttpRequest req,
+            [DurableClient] IDurableOrchestrationClient client,
+            ILogger logger)
+        {
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var alertModel = JsonConvert.DeserializeObject<CreateAlertModel>(requestBody);
+
+            if (string.IsNullOrWhiteSpace(alertModel.ElfId))
+                return new BadRequestObjectResult("Elf ID is not valid");
+
+            var orchestratorName = await _orchestratorfactory.GetOrchestratorNameAsync(alertModel.Type, default);
+
+            var orchestratorId = await client.StartNewAsync<CreateAlertModel>(orchestratorName, alertModel);
+
+            return new OkObjectResult(orchestratorId);
         }
     }
 }
