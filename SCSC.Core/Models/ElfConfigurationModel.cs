@@ -11,5 +11,11 @@ namespace SCSC.Core.Models
     {
         [JsonProperty("name")]
         public string Name { get; set; }
+
+        [JsonProperty("startWorkTime")]
+        public string StartWorkTime { get; set; } = "09:00:00";
+
+        [JsonProperty("endWorkTime")]
+        public string EndWorkTime { get; set; } = "18:00:00";
     }
 }

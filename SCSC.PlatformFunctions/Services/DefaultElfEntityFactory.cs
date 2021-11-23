@@ -22,7 +22,7 @@ namespace SCSC.PlatformFunctions.Services
             return Task.FromResult(nameof(ElfSenior));
         }
 
-        private static IEnumerable<string> EntityNames = new List<string>() { nameof(ElfSenior) };
+        private static IEnumerable<string> EntityNames = new List<string>() { nameof(ElfSenior)};
 
         public Task<IEnumerable<string>> GetEntityNamesAsync(CancellationToken token)
         {

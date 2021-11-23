@@ -28,10 +28,16 @@ namespace SCSC.PlatformFunctions.Entities
         public string Name { get; set; }
 
         [JsonProperty("lastUpdate")]
-        public DateTimeOffset LastUpdate { get; set; }
+        public DateTimeOffset? LastUpdate { get; set; }
 
         [JsonProperty("LastPackages")]
         public List<PackageInfoModel> Packages { get; set; } = new List<PackageInfoModel>();
+
+        [JsonProperty("startWorkTime")]
+        public TimeSpan StartWorkTime { get; set; } = new TimeSpan(9, 0, 0);
+
+        [JsonProperty("endWorkTime")]
+        public TimeSpan EndWorkTime { get; set; } = new TimeSpan(18, 0, 0);
         #endregion [ State ]
 
         #region [ IElfEntity interface ]
@@ -40,6 +46,8 @@ namespace SCSC.PlatformFunctions.Entities
             if (config != null)
             {
                 this.Name = config.Name;
+                this.StartWorkTime = TimeSpan.Parse(config.StartWorkTime);
+                this.EndWorkTime = TimeSpan.Parse(config.EndWorkTime);
             }
 
             await CleanPackagesAsync();
@@ -54,6 +62,7 @@ namespace SCSC.PlatformFunctions.Entities
                 if (innerPackage != null && innerPackage.IsOpen)
                 {
                     innerPackage.EndTimestamp = package.Timestamp;
+                    this.LastUpdate = DateTimeOffset.Now;
                 }
             }
 
@@ -74,6 +83,7 @@ namespace SCSC.PlatformFunctions.Entities
                     innerPackage.KidName = package.KidName;
                     innerPackage.PackageId = package.PackageId;
                     this.Packages.Add(innerPackage);
+                    this.LastUpdate = DateTimeOffset.Now;
                 }
             }
 
@@ -82,7 +92,18 @@ namespace SCSC.PlatformFunctions.Entities
 
         public Task<double> GetHourProductivity()
         {
-            throw new NotImplementedException();
+            if (this.Packages == null)
+                return Task.FromResult(0.0);
+
+            var productivity = this.Packages.CalcuateAverageSpeed(this.StartWorkTime,
+                this.EndWorkTime, null, TimeSpan.FromHours(1));
+
+            return Task.FromResult(productivity);
+        }
+
+        public Task<DateTimeOffset?> GetLastUpdate()
+        {
+            return Task.FromResult(this.LastUpdate);
         }
         #endregion [ IElfEntity interface ]
 
@@ -93,7 +114,7 @@ namespace SCSC.PlatformFunctions.Entities
 
             if (packagesToRemove.Any())
             {
-                this.logger.LogInformation($"Calling orchestrator {nameof(PackageArchiverOrchestrator.ArchivePackage)}");
+                this.logger.LogInformation($"Calling orchestrator {nameof(PackageArchiverOrchestrator.ArchivePackages)}");
                 var packageArchive = new PackageArchiverOrchestrator.PackageArchiveInfo()
                 {
                     ElfId = Entity.Current.EntityKey,
@@ -101,7 +122,7 @@ namespace SCSC.PlatformFunctions.Entities
                     ElfName = this.Name,
                     Packages = packagesToRemove
                 };
-                Entity.Current.StartNewOrchestration(nameof(PackageArchiverOrchestrator.ArchivePackage), packageArchive);
+                Entity.Current.StartNewOrchestration(nameof(PackageArchiverOrchestrator.ArchivePackages), packageArchive);
                 this.Packages.RemoveAll(p => packagesToRemove.Contains(p));
             }
 

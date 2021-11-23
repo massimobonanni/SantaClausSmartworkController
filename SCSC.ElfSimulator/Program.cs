@@ -125,6 +125,16 @@ namespace SCSC.ElfSimulator
             var startJobTime = TimeSpan.Parse(elf.StartWorkTime);
             var endJobTime = TimeSpan.Parse(elf.EndWorkTime);
 
+            await restClient.UpdateElfAsync(elf.Id, new UpdateElfModel()
+            {
+                Configuration = new ElfConfigurationModel()
+                {
+                    Name = elf.Name,
+                    StartWorkTime=elf.StartWorkTime,
+                    EndWorkTime=elf.EndWorkTime
+                }
+            }, default);
+
             WriteLog($"{DateTime.Now} > Elf {elf.Name} is starting its job", ConsoleColor.Cyan);
             var startupDelay = rand.Next(0, 10000);
             await Task.Delay(startupDelay, ct);

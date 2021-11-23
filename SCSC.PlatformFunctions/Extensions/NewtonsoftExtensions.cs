@@ -13,7 +13,8 @@ namespace Newtonsoft.Json.Linq
                 return null;
 
             var retVal = new ElfInfoModel();
-            retVal.Name = (string)jobject.Property("name").Value;
+            if (jobject.Property("name") != null)
+                retVal.Name = (string)jobject.Property("name").Value;
             retVal.LastUpdate = DateTimeOffset.Parse(jobject.Property("lastUpdate").Value.ToString());
             retVal.Packages = jobject.ToPackageInfoModels();
 
@@ -25,13 +26,15 @@ namespace Newtonsoft.Json.Linq
                 return null;
 
             List<PackageInfoModel> retVal = null;
-            var packages = jobject.Property("packages").Value as JObject;
-            if (packages != null)
+            if (jobject.Property("LastPackages") != null)
             {
-                var convertedPackages = packages.ToObject<List<PackageInfoModel>>();
-                retVal = convertedPackages;
+                var packages = jobject.Property("LastPackages").Value as JObject;
+                if (packages != null)
+                {
+                    var convertedPackages = packages.ToObject<List<PackageInfoModel>>();
+                    retVal = convertedPackages;
+                }
             }
-
             return retVal;
         }
 

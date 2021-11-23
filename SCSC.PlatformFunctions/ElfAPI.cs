@@ -13,6 +13,7 @@ using SCSC.Core.Models;
 using SCSC.PlatformFunctions.Entities.Interfaces;
 using SCSC.PlatformFunctions.Filters;
 using SCSC.PlatformFunctions.Services.Interfaces;
+using SCSC.PlatformFunctions.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -206,7 +207,7 @@ namespace SCSC.PlatformFunctions
 
                 foreach (var item in queryResult.Entities)
                 {
-                    if (elfEntityNames.Contains(item.EntityId.EntityName))
+                    if (elfEntityNames.Contains(item.EntityId.EntityName,new DurableEntityNameComparer()))
                     {
                         ElfInfoModel elf = item.ToElfInfoModel();
                         if (filters.AreFiltersVerified(elf))

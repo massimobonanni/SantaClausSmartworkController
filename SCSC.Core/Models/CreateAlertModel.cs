@@ -11,6 +11,9 @@ namespace SCSC.Core.Models
         [JsonProperty("elfId")]
         public string ElfId { get; set; }
 
+        [JsonProperty("alertName")]
+        public string AlertName { get; set; }
+
         [JsonProperty("type")]
         [JsonConverter(typeof(StringEnumConverter))]
         public AlertType Type { get; set; }
