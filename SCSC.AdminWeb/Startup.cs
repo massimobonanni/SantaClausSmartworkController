@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SCSC.APIClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SCSC.AdminWeb
@@ -24,6 +26,14 @@ namespace SCSC.AdminWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddHttpClient();
+            services.AddTransient<ElfsRestClient>(provider => {
+                var httpClientFactory = provider.GetService<IHttpClientFactory>();
+                var httpClient = httpClientFactory.CreateClient();
+                var baseUrl=Configuration.GetValue<string>("APISettings:BaseUrl");
+                var apiKey = Configuration.GetValue<string>("APISettings:ApiKey");
+                return new ElfsRestClient(httpClient, baseUrl, apiKey);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

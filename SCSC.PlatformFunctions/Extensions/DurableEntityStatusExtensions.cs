@@ -24,5 +24,25 @@ namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
 
             return retVal;
         }
+
+        public static bool IsDeleted(this DurableEntityStatus entity)
+        {
+            if (entity == null)
+                return true;
+
+            var retVal = false;
+
+            var jState = entity.State as JObject;
+            if (jState != null)
+            {
+                var isDeletedProperty = jState.Property("isDeleted");
+                if (isDeletedProperty!=null && isDeletedProperty.HasValues)
+                {
+                    bool.TryParse(isDeletedProperty.Value.ToString(), out retVal);
+                }
+            }
+
+            return retVal;
+        }
     }
 }

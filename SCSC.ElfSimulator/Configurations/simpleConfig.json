@@ -1,30 +1,12 @@
 ﻿{
-  "apiBaseUrl": "",
+  "apiBaseUrl": "http://localhost:7071",
   "elfs": [
     {
-      "id": "Alabaster_Snowball",
+      "id": "alabaster_snowball",
       "name": "Alabaster Snowball",
       "breakDuration": 30,
       "operationDurationMin": 60,
       "operationDurationMax": 300,
-      "workStarTime": "09:00:00",
-      "endStarTime": "18:00:00"
-    },
-    {
-      "id": "Bushy_Evergreen",
-      "name": "Bushy Evergreen",
-      "breakDuration": 15,
-      "operationDurationMin": 30,
-      "operationDurationMax": 600,
-      "workStarTime": "09:00:00",
-      "endStarTime": "18:00:00"
-    },
-    {
-      "id": "Minstix_Pepper",
-      "name": "Minstix Pepper",
-      "breakDuration": 60,
-      "operationDurationMin": 60,
-      "operationDurationMax": 600,
       "workStarTime": "09:00:00",
       "endStarTime": "18:00:00"
     }

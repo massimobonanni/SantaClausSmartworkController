@@ -57,7 +57,7 @@ namespace SCSC.PlatformFunctions.Orchestrators
         {
             logger.LogInformation($"[START ORCHESTRATOR] --> {nameof(PackageArchiverOrchestrator.ArchivePackage)}");
             var packagesInfo = context.GetInput<PackageArchiveInfo>();
-
+            
             try
             {
                 await context.CallActivityAsync(nameof(PackageArchiverOrchestrator.SavePackageToStorage), packagesInfo);

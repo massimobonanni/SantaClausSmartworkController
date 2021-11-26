@@ -168,6 +168,34 @@ namespace SCSC.PlatformFunctions
         }
 
         #region Open API Definition
+        [OpenApiOperation(operationId: "deleteelf",
+            Summary = "Remove an existing elf from the platform.",
+            Description = "Use this API to remove an existing elf from the platform.",
+            Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK,
+            contentType: "json",
+            bodyType: typeof(string),
+            Summary = "Return the elf id removed",
+            Description = "If the operation is succeeded, it return the elf id deleted.")]
+        [OpenApiParameter("elfId", Description = "Identifier of the elf to delete",
+            Required = true, In = ParameterLocation.Path)]
+        #endregion Open API Definition
+        [FunctionName(nameof(DeleteElf))]
+        public async Task<IActionResult> DeleteElf(
+            [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "elfs/{elfId}")] HttpRequest req,
+            string elfId,
+            [DurableClient] IDurableEntityClient client,
+            ILogger logger)
+        {
+            var entityId = await _entityfactory.GetEntityIdAsync(elfId, default);
+
+            await client.SignalEntityAsync<IElfEntity>(entityId, d => d.Delete());
+
+            return new OkObjectResult(elfId);
+        }
+
+        #region Open API Definition
         [OpenApiOperation(operationId: "getelfs",
             Summary = "Get the list of elfs.",
             Visibility = OpenApiVisibilityType.Important)]
@@ -207,11 +235,14 @@ namespace SCSC.PlatformFunctions
 
                 foreach (var item in queryResult.Entities)
                 {
-                    if (elfEntityNames.Contains(item.EntityId.EntityName,new DurableEntityNameComparer()))
+                    if (elfEntityNames.Contains(item.EntityId.EntityName, new DurableEntityNameComparer()))
                     {
-                        ElfInfoModel elf = item.ToElfInfoModel();
-                        if (filters.AreFiltersVerified(elf))
-                            result.Add(elf);
+                        if (!item.IsDeleted())
+                        {
+                            ElfInfoModel elf = item.ToElfInfoModel();
+                            if (filters.AreFiltersVerified(elf))
+                                result.Add(elf);
+                        }
                     }
                 }
 
@@ -258,5 +289,6 @@ namespace SCSC.PlatformFunctions
             }
             return new NotFoundObjectResult(elfId);
         }
+
     }
 }

@@ -8,12 +8,23 @@ namespace System.Collections.Generic
 {
     public static class IEnumerableExtensions
     {
+        public static int CountPackagesInDay(this IEnumerable<PackageInfoModel> packages, DateTime date)
+        {
+            if (packages == null)
+                return 0;
 
-        public static double CalcuateAverageSpeed(this IEnumerable<PackageInfoModel> packages, TimeSpan startworkTime,
+            var packagesInDay = packages
+               .Where(p => p.StartTimestamp.Date == date)
+               .Where(p => p.EndTimestamp.HasValue && p.EndTimestamp.Value.Date == date);
+
+            return packagesInDay.Count();
+        }
+
+        public static double CalculateAverageSpeed(this IEnumerable<PackageInfoModel> packages, TimeSpan startworkTime,
             TimeSpan endWorkTime, DateTimeOffset? calculationTime = null, TimeSpan? timeReference = null)
         {
             if (packages == null)
-                throw new NullReferenceException(nameof(packages));
+                return 0;
 
             var tNow = DateTimeOffset.Now; // Time to calculate the average
 

@@ -12,6 +12,7 @@ namespace SCSC.PlatformFunctions.Entities.Interfaces
         void PackageStarted(PackageStartedModel package);
         void PackageEnded(PackageEndedModel package);
         void Configure(ElfConfigurationModel config);
+        void Delete();
 
         Task<double> GetHourProductivity();
         Task<DateTimeOffset?> GetLastUpdate();

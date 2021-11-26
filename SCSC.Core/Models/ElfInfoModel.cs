@@ -15,7 +15,10 @@ namespace SCSC.Core.Models
         public string Name { get; set; }
         [JsonProperty("lastUpdate")]
         public DateTimeOffset LastUpdate { get; set; }
-
+        [JsonProperty("startWorkTime")]
+        public TimeSpan StartWorkTime { get; set; }
+        [JsonProperty("endWorkTime")]
+        public TimeSpan EndWorkTime { get; set; }
         [JsonProperty("LastPackages")]
         public List<PackageInfoModel> Packages { get; set; }
     }

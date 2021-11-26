@@ -16,6 +16,7 @@ namespace SCSC.PlatformFunctions.Entities
     [JsonObject(MemberSerialization.OptIn)]
     public class ElfSenior : IElfEntity
     {
+        [JsonIgnore]
         private readonly ILogger logger;
 
         public ElfSenior(ILogger logger)
@@ -30,7 +31,7 @@ namespace SCSC.PlatformFunctions.Entities
         [JsonProperty("lastUpdate")]
         public DateTimeOffset? LastUpdate { get; set; }
 
-        [JsonProperty("LastPackages")]
+        [JsonProperty("lastPackages")]
         public List<PackageInfoModel> Packages { get; set; } = new List<PackageInfoModel>();
 
         [JsonProperty("startWorkTime")]
@@ -38,6 +39,9 @@ namespace SCSC.PlatformFunctions.Entities
 
         [JsonProperty("endWorkTime")]
         public TimeSpan EndWorkTime { get; set; } = new TimeSpan(18, 0, 0);
+
+        [JsonProperty("isDeleted")]
+        public bool IsDeleted { get; set; } = false;
         #endregion [ State ]
 
         #region [ IElfEntity interface ]
@@ -48,6 +52,7 @@ namespace SCSC.PlatformFunctions.Entities
                 this.Name = config.Name;
                 this.StartWorkTime = TimeSpan.Parse(config.StartWorkTime);
                 this.EndWorkTime = TimeSpan.Parse(config.EndWorkTime);
+                this.IsDeleted = false;
             }
 
             await CleanPackagesAsync();
@@ -95,7 +100,7 @@ namespace SCSC.PlatformFunctions.Entities
             if (this.Packages == null)
                 return Task.FromResult(0.0);
 
-            var productivity = this.Packages.CalcuateAverageSpeed(this.StartWorkTime,
+            var productivity = this.Packages.CalculateAverageSpeed(this.StartWorkTime,
                 this.EndWorkTime, null, TimeSpan.FromHours(1));
 
             return Task.FromResult(productivity);
@@ -105,6 +110,16 @@ namespace SCSC.PlatformFunctions.Entities
         {
             return Task.FromResult(this.LastUpdate);
         }
+
+        public void Delete()
+        {
+            this.Name = null;
+            this.StartWorkTime = TimeSpan.Zero;
+            this.EndWorkTime = TimeSpan.Zero;
+            this.Packages = new List<PackageInfoModel>();
+            this.IsDeleted = true;
+        }
+
         #endregion [ IElfEntity interface ]
 
         #region [ Internal Methods ]
@@ -133,7 +148,5 @@ namespace SCSC.PlatformFunctions.Entities
         [FunctionName(nameof(ElfSenior))]
         public static Task Run([EntityTrigger] IDurableEntityContext ctx, ILogger logger)
             => ctx.DispatchAsync<ElfSenior>(logger);
-
-
     }
 }

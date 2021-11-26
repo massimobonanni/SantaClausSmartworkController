@@ -15,7 +15,15 @@ namespace Newtonsoft.Json.Linq
             var retVal = new ElfInfoModel();
             if (jobject.Property("name") != null)
                 retVal.Name = (string)jobject.Property("name").Value;
-            retVal.LastUpdate = DateTimeOffset.Parse(jobject.Property("lastUpdate").Value.ToString());
+            if (jobject.Property("startWorkTime") != null &&
+                TimeSpan.TryParse(jobject.Property("startWorkTime").Value.ToString(),out var tmpStartWorkTime))
+                retVal.StartWorkTime = tmpStartWorkTime;
+            if (jobject.Property("endWorkTime") != null &&
+                TimeSpan.TryParse(jobject.Property("endWorkTime").Value.ToString(), out var tmpEndWorkTime))
+                retVal.EndWorkTime = tmpEndWorkTime;
+            if (jobject.Property("lastUpdate") != null &&
+                DateTimeOffset.TryParse(jobject.Property("lastUpdate").Value.ToString(), out var tmpLastUpdate))
+                retVal.LastUpdate = tmpLastUpdate;
             retVal.Packages = jobject.ToPackageInfoModels();
 
             return retVal;
@@ -26,9 +34,9 @@ namespace Newtonsoft.Json.Linq
                 return null;
 
             List<PackageInfoModel> retVal = null;
-            if (jobject.Property("LastPackages") != null)
+            if (jobject.Property("lastPackages") != null)
             {
-                var packages = jobject.Property("LastPackages").Value as JObject;
+                var packages = jobject.Property("lastPackages").Value as JArray;
                 if (packages != null)
                 {
                     var convertedPackages = packages.ToObject<List<PackageInfoModel>>();

@@ -16,7 +16,7 @@ namespace SCSC.Core.Test.Estensions
         {
             IEnumerable<PackageInfoModel> target = null;
 
-            Assert.Throws<NullReferenceException>(() => target.CalcuateAverageSpeed(new TimeSpan(9, 0, 0), new TimeSpan(18, 0, 0)));
+            Assert.Throws<NullReferenceException>(() => target.CalculateAverageSpeed(new TimeSpan(9, 0, 0), new TimeSpan(18, 0, 0)));
         }
 
         [Theory()]
@@ -26,7 +26,7 @@ namespace SCSC.Core.Test.Estensions
             IEnumerable<PackageInfoModel> packages, DateTimeOffset calculationTime, TimeSpan timeReference,
             TimeSpan startWorkTime, TimeSpan endWorkTime, double expectedSpeed)
         {
-            var actualSpeed = packages.CalcuateAverageSpeed(startWorkTime, endWorkTime, calculationTime, timeReference);
+            var actualSpeed = packages.CalculateAverageSpeed(startWorkTime, endWorkTime, calculationTime, timeReference);
             Assert.Equal(expectedSpeed, actualSpeed);
         }
 
@@ -37,7 +37,7 @@ namespace SCSC.Core.Test.Estensions
             IEnumerable<PackageInfoModel> packages, DateTimeOffset calculationTime, 
             TimeSpan startWorkTime, TimeSpan endWorkTime, double expectedSpeed)
         {
-            var actualSpeed = packages.CalcuateAverageSpeed(startWorkTime, endWorkTime, calculationTime);
+            var actualSpeed = packages.CalculateAverageSpeed(startWorkTime, endWorkTime, calculationTime);
             Assert.Equal(expectedSpeed, actualSpeed);
         }
         #endregion
