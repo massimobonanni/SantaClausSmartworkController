@@ -1,0 +1,42 @@
+﻿@model SCSC.AdminWeb.Models.Alerts.IndexViewModel
+
+@{
+    ViewData["Title"] = "Alerts Management";
+}
+
+<h2>Alerts Management</h2>
+<br/>
+<form class="border">
+    <div class="form-row m-2">
+        <div class="form-group col">
+            <label for="filterFirstName">Elf Id</label>
+            <input type="text" class="form-control" id="filterElfId" name="filterElfId" placeholder="elf id" value="@Model.FilterElfId">
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary ml-2 mb-2">Search</button>
+</form>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Alerts)
+        {
+            <tr>
+                <td>@item.AlertName</td>
+                <td>@item.Type</td>
+                <td>@item.Status</td>
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) 
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

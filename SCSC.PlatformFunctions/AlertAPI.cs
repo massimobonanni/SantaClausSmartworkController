@@ -9,11 +9,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using SCSC.Core.Models;
+using SCSC.PlatformFunctions.Filters;
 using SCSC.PlatformFunctions.Orchestrators;
 using SCSC.PlatformFunctions.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -42,6 +44,11 @@ namespace SCSC.PlatformFunctions
             contentType: "json",
             bodyType: typeof(List<AlertInfoModel>),
             Summary = "The full list of alerts")]
+        [OpenApiParameter(name: "elfId",
+            In = ParameterLocation.Query,
+            Type = typeof(string),
+            Summary = "Filter alerts by elf id.",
+            Description = "Retrieve only alerts related ta specific elf by elfid.")]
         #endregion Open API Definition
         [FunctionName(nameof(GetAlerts))]
         public async Task<IActionResult> GetAlerts(
@@ -50,6 +57,10 @@ namespace SCSC.PlatformFunctions
            ILogger logger)
         {
             var result = new List<AlertInfoModel>();
+
+            var filters = GetAlertsFilters.CreateFromHttpRequest(req);
+            var orchestratorNames = _orchestratorfactory.GetOrchestratorNames();
+
             var noFilter = new OrchestrationStatusQueryCondition()
             {
                 PageSize = 100,
@@ -65,7 +76,12 @@ namespace SCSC.PlatformFunctions
 
                 foreach (var item in queryResult.DurableOrchestrationState)
                 {
-                    result.Add(item.ToAlertInfoModel());
+                    if (orchestratorNames.Contains(item.Name))
+                    {
+                        var alert = item.ToAlertInfoModel();
+                        if (filters.AreFiltersVerified(alert))
+                            result.Add(item.ToAlertInfoModel());
+                    }
                 }
 
                 noFilter.ContinuationToken = queryResult.ContinuationToken;
@@ -161,7 +177,7 @@ namespace SCSC.PlatformFunctions
             [DurableClient] IDurableOrchestrationClient client,
             ILogger logger)
         {
-            await client.RaiseEventAsync(alertId,AlertOrchestratorEvents.Cancel);
+            await client.RaiseEventAsync(alertId, AlertOrchestratorEvents.Cancel);
 
             return new OkObjectResult(alertId);
         }

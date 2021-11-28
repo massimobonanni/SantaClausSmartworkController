@@ -1,4 +1,5 @@
-﻿@model SCSC.AdminWeb.Models.Elfs.IndexViewModel
+﻿@using SCSC.AdminWeb.Models.Elfs
+@model IndexViewModel
 @{
     ViewData["Title"] = "Elfs Management";
 }
@@ -6,25 +7,25 @@
 <h2>Elfs Management</h2>
 <br />
 <form class="border">
-    <div class="form-row">
+    <div class="form-row m-2">
         <div class="form-group col">
             <label for="filterFirstName">Elf Name</label>
             <input type="text" class="form-control" id="filterName" name="filterName" placeholder="elf name" value="@Model.FilterName">
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Search</button>
+    <button type="submit" class="btn btn-primary ml-2 mb-2">Search</button>
 </form>
 <br />
 <table class="table">
     <thead>
         <tr>
-            <td>Name</td>
-            <td>Last Update</td>
-            <td>Work Time</td>
-            <td>Daily<br/>Packages</td>
-            <td>Daily Prod.<br/>(packs/hour)</td>
-            <td>Last Hour Prod.<br/>(packs/hour)</td>
+            <th>Name</th>
+            <th>Last Update</th>
+            <th>Work Time</th>
+            <th>Daily<br/>Packages</th>
+            <th>Daily Prod.<br/>(packs/hour)</th>
+            <th>Last Hour Prod.<br/>(packs/hour)</th>
             <th></th>
         </tr>
     </thead>

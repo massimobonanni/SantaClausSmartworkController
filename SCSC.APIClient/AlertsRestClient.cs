@@ -19,9 +19,19 @@ namespace SCSC.APIClient
 
         protected override string DefaultApiEndpoint => "api/alerts";
 
-        public async Task<IEnumerable<AlertInfoModel>> GetAlertsAsync(CancellationToken token)
+        public async Task<IEnumerable<AlertInfoModel>> GetAlertsAsync(string filterElfId, CancellationToken token)
         {
-            Uri uri = this.CreateAPIUri();
+            string query = string.Empty;
+            if (!string.IsNullOrEmpty(filterElfId))
+            {
+                query += $"elfId={filterElfId}";
+            }
+
+            Uri uri;
+            if (!string.IsNullOrEmpty(query))
+                uri = this.CreateAPIUri($"{query}");
+            else
+                uri = this.CreateAPIUri();
 
             var response = await this._httpClient.GetAsync(uri, token);
             if (response.IsSuccessStatusCode)

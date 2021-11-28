@@ -35,6 +35,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
             {
                 Id = source.InstanceId,
                 Status = source.RuntimeStatus.ToAlertStatus(),
+                AlertName = inputModel.AlertName,
                 Data = inputModel.Data,
                 Type = inputModel.Type,
                 ElfId = inputModel.ElfId

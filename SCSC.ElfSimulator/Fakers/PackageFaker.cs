@@ -15,7 +15,7 @@ namespace SCSC.ElfSimulator.Fakers
             package.PackageId = Guid.NewGuid().ToString();
             package.Timestamp = DateTimeOffset.Now;
             package.GiftDescription = ToysFaker.Toy();
-            package.KidName = Faker.Name.FullName();
+            package.KidName = $"{Faker.Name.First()} {Faker.Name.Last()}";
             return package;
         }
     }

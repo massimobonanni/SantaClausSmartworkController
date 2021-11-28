@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SCSC.AdminWeb.Models.Elfs;
 using SCSC.APIClient;
+using SCSC.Core.Models;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,8 +18,8 @@ namespace SCSC.AdminWeb.Controllers
             this.elfsRestClient = elfsRestClient;
         }
 
-        // GET: ElfsController
-        public async Task<ActionResult> Index([FromQuery(Name = "filterName")] string filterName, CancellationToken token)
+        public async Task<ActionResult> Index([FromQuery(Name = "filterName")] string filterName,
+           CancellationToken token)
         {
             var model = new IndexViewModel() { FilterName = filterName };
 
@@ -29,73 +30,17 @@ namespace SCSC.AdminWeb.Controllers
             return View(model);
         }
 
-        // GET: ElfsController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(string id,
+         CancellationToken token)
         {
-            return View();
+            var elf = await this.elfsRestClient.GetElfAsync(id, token);
+            if (elf == null)
+            {
+                return this.NotFound();
+            }
+            var model = new ElfInfoViewModel(elf);
+            return View(model);
         }
 
-        // GET: ElfsController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ElfsController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ElfsController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ElfsController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ElfsController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ElfsController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

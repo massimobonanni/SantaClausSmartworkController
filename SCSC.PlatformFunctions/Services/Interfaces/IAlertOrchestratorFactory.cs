@@ -12,5 +12,7 @@ namespace SCSC.PlatformFunctions.Services.Interfaces
     public interface IAlertOrchestratorFactory
     {
         Task<string> GetOrchestratorNameAsync(AlertType alertType, CancellationToken token);
+
+        IEnumerable<string> GetOrchestratorNames();
     }
 }

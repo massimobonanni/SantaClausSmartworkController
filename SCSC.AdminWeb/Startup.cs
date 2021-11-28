@@ -25,14 +25,21 @@ namespace SCSC.AdminWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var baseUrl = Configuration.GetValue<string>("APISettings:BaseUrl");
+            var apiKey = Configuration.GetValue<string>("APISettings:ApiKey");
+
             services.AddControllersWithViews();
+
             services.AddHttpClient();
             services.AddTransient<ElfsRestClient>(provider => {
                 var httpClientFactory = provider.GetService<IHttpClientFactory>();
                 var httpClient = httpClientFactory.CreateClient();
-                var baseUrl=Configuration.GetValue<string>("APISettings:BaseUrl");
-                var apiKey = Configuration.GetValue<string>("APISettings:ApiKey");
                 return new ElfsRestClient(httpClient, baseUrl, apiKey);
+            });
+            services.AddTransient<AlertsRestClient>(provider => {
+                var httpClientFactory = provider.GetService<IHttpClientFactory>();
+                var httpClient = httpClientFactory.CreateClient();
+                return new AlertsRestClient(httpClient, baseUrl, apiKey);
             });
         }
 

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace SCSC.PlatformFunctions.Services
 {
@@ -25,6 +26,17 @@ namespace SCSC.PlatformFunctions.Services
                 default:
                     throw new ArgumentException(nameof(alertType));
             }
+        }
+
+        private static string[] orchestratorNames =
+            {
+            nameof(ProductivityAlertOrchestrator.ProductivityAlert),
+            nameof(InactivityAlertOrchestrator.InactivityAlert)
+            };
+
+        public IEnumerable<string> GetOrchestratorNames()
+        {
+            return orchestratorNames;
         }
     }
 }

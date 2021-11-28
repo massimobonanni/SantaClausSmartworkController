@@ -1,0 +1,89 @@
+﻿@using SCSC.AdminWeb.Models.Elfs
+@model ElfInfoViewModel
+
+@{
+    ViewData["Title"] = @Model.Name + " Details";
+}
+
+<h2 class="align-content-center text-secondary"><img src="~/images/Elf.png" height=50/>&nbsp; Elf Details</h2>
+<br />
+<div>
+    <h3>@Model.Name</h3>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            Last update
+        </dt>
+        <dd class="col-sm-9">
+            @Model.LastUpdate.ToLocalTime().ToString(@"dd/MM/yyyy HH:mm:ss")
+        </dd>
+        <dt class="col-sm-3">
+            Job Time
+        </dt>
+        <dd class="col-sm-9">
+            @Model.StartWorkTime.ToString(@"hh\:mm") - @Model.EndWorkTime.ToString(@"hh\:mm")
+        </dd>
+        <dt class="col-sm-3">
+            Last Hour productivity
+        </dt>
+        <dd class="col-sm-9">
+            @Model.LastHourProductivity.ToString("##0.00") &nbsp;packs/hour
+        </dd>
+        <dt class="col-sm-3">
+            Daily Productivity
+        </dt>
+        <dd class="col-sm-9">
+            @Model.DailyProductivity.ToString("##0.00") &nbsp;packs/hour
+        </dd>
+        <dt class="col-sm-3">
+            Daily packages
+        </dt>
+        <dd class="col-sm-9">
+            @Model.PackagesToday
+        </dd>
+    </dl>
+</div>
+<div class="accordion" id="packages">
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h2 class="mb-2">
+                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    <img src="~/images/Package.png" height=25/>&nbsp; Package list
+                </button>
+            </h2>
+        </div>
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#packages">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Kid Name</th>
+                            <th>Gift Description</th>
+                            <th>Packaging Start</th>
+                            <th>Packaging Stop</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Packages.OrderByDescending(p => p.StartTimestamp))
+                        {
+                            <tr>
+                                <td>@item.KidName</td>
+                                <td>@item.GiftDescription</td>
+                                <td>@item.StartTimestamp.ToLocalTime().ToString("HH:mm:ss")</td>
+                                <td>@item.EndTimestamp?.ToLocalTime().ToString("HH:mm:ss")</td>
+                                <td>@item.DurationInSec?.ToString("##0")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<br />
+<div>
+    @Html.ActionLink("Alerts", "Index","Alerts", new { elfId = Model.Id }) |
+    <a asp-action="Index">Back to List</a>
+</div>
