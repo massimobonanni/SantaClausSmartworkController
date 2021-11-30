@@ -10,13 +10,18 @@ trigger:
 
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
+variables:
+  dockerId: 'massimobonanni'
+  vmBuildImage: 'windows-latest'
+  vmDeployImage: 'ubuntu-latest'
+
 stages:
 - stage: Build
   jobs:
   - job: BuildAndTest
     displayName: 'Build and Test'
     pool:
-      vmImage: 'windows-latest'
+      vmImage: $(vmBuildImage)
 
     steps:
     - task: DotNetCoreCLI@2
@@ -80,14 +85,13 @@ stages:
         command: 'build'
         projects: 'SCSC.ElfSimulator/SCSC.ElfSimulator.csproj'
 
-
 - stage: Deploy
   dependsOn: Build
   jobs:
   - job: BuildAndDeployToDockerHub
     displayName: 'Deploy to Docker Hub'
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: $(vmDeployImage)
   
     steps:
     - task: DotNetCoreCLI@2
@@ -121,6 +125,6 @@ stages:
       inputs:
         script: |
           cd SCSC.ElfSimulator
-          docker build -f dockerfile -t elfsimulator:$(Build.BuildNumber) $(Build.SourcesDirectory)
+          docker build -f .\Dockerfile -t elfsimulator:$(Build.BuildNumber) $(Build.SourcesDirectory)
           docker tag elfsimulator:$(Build.BuildNumber) massimobonanni/elfsimulator:$(Build.BuildNumber)
-          docker push massimobonanni/elfsimulator:$(Build.BuildNumber)
+          docker push $(dockerId)/elfsimulator:$(Build.BuildNumber)
