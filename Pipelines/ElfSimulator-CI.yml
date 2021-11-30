@@ -10,8 +10,12 @@ trigger:
 
 name: ElfSimulator_$(Date:yyyyMMdd)$(Rev:.r)
 
+variables:
+  vmImageName: 'windows-2022'
+  dockerImageTag : $(Date:yyyyMMdd)$(Rev:.r)
+
 pool:
-  vmImage: windows-2022
+  vmImage: $(vmImageName)
 
 steps:
 - task: DotNetCoreCLI@2
@@ -89,4 +93,4 @@ steps:
     repository: 'ElfSimulator'
     command: 'buildAndPush'
     Dockerfile: 'SCSC.ElfSimulator/Dockerfile'
-    tags: '$(Date:yyyyMMdd)$(Rev:.r)'
+    tags: $(dockerImageTag)
