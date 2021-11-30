@@ -18,6 +18,7 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
+      mkdir $(outdir)
       az --version
       az bicep install
       az bicep build --file $(templateFile) --outdir $(outdir)
