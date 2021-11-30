@@ -78,13 +78,29 @@ steps:
     command: 'build'
     projects: 'SCSC.ElfSimulator/SCSC.ElfSimulator.csproj'
 
+- task: DockerInstaller@0
+  inputs:
+    dockerVersion: '17.09.0-ce'
+
 - task: Docker@2
   displayName: Login to Docker Hub
   inputs:
     command: login
     containerRegistry: 'DockerHubConnection'
 
+- task: CmdLine@2
+  name: BuildElfSimulatorContainerImage
+  displayName: 'Build SCSC.ElfSimulator Container Image'
+  inputs:
+    script: |
+      cd SCSC.ElfSimulator
+      docker build -f .\dockerfile -t elfsimulator:$(Build.BuildNumber) $(Build.SourcesDirectory)
+      docker tag elfsimulator:$(Build.BuildNumber) massimobonanni/elfsimulator:$(Build.BuildNumber)
+      docker push massimobonanni/elfsimulator:$(Build.BuildNumber)
+
+
 - task: Docker@2
+  enabled: false
   name: BuildElfSimulatorContainerImage
   displayName: 'Build SCSC.ElfSimulator Container Image'
   inputs:
@@ -93,3 +109,4 @@ steps:
     command: 'buildAndPush'
     Dockerfile: 'SCSC.ElfSimulator/Dockerfile'
     tags: $(Build.BuildNumber)
+
