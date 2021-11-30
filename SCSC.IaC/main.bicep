@@ -1,3 +1,4 @@
+// This template creates resource group and use a module to create resources
 targetScope = 'subscription'
 
 param environmentName string = 'demo' 
