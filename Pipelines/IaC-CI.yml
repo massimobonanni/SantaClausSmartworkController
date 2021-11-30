@@ -5,7 +5,7 @@ name: Compile Bicep files
 
 variables:
   vmImageName: 'ubuntu-latest'
-
+  azureSubscription: 'Visual Studio Enterprise (2) Connection'
   templateFile: './main.bicep'
   outDir: './out'
 pool:
@@ -14,7 +14,7 @@ pool:
 steps:
 - task: AzureCLI@2
   inputs:
-    azureSubscription: ''
+    azureSubscription: $(azureSubscription)
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
