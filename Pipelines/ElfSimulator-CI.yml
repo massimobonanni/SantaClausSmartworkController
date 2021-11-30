@@ -11,7 +11,7 @@ trigger:
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
 variables:
-  vmImageName: 'windows-2019'
+  vmImageName: 'ubuntu-latest'
 
 pool:
   vmImage: $(vmImageName)
@@ -40,6 +40,7 @@ steps:
     projects: 'Tests/SCSC.Core.Test/SCSC.Core.Test.csproj'
 
 - task: VSTest@2
+  enabled: false
   inputs:
     testSelector: 'testAssemblies'
     testAssemblyVer2: |
