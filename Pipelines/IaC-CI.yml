@@ -6,8 +6,8 @@ name: Compile Bicep files
 variables:
   vmImageName: 'ubuntu-latest'
   azureSubscription: 'Visual Studio Enterprise (2) Connection'
-  templateFile: './main.bicep'
-  outDir: './out'
+  templateFile: './SCSC.IaC/main.bicep'
+  outDir: './SCSC.IaC/out'
 pool:
   vmImage: $(vmImageName)
 
