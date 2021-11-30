@@ -76,10 +76,17 @@ steps:
     projects: 'SCSC.ElfSimulator/SCSC.ElfSimulator.csproj'
 
 - task: Docker@2
+  displayName: Login to Docker Hub
+  inputs:
+    command: login
+    containerRegistry: 'DockerHubConnection'
+
+- task: Docker@2
   name: BuildElfSimulatorContainerImage
   displayName: 'Build SCSC.ElfSimulator Container Image'
   inputs:
     containerRegistry: 'DockerHubConnection'
+    repository: 'ElfSimulator'
     command: 'buildAndPush'
     Dockerfile: 'SCSC.ElfSimulator/Dockerfile'
     tags: '$(Date:yyyyMMdd)$(Rev:.r)'
