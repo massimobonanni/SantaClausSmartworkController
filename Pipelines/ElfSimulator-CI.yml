@@ -11,7 +11,7 @@ trigger:
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
 variables:
-  vmImageName: 'windows-2022'
+  vmImageName: 'windows-2019'
 
 pool:
   vmImage: $(vmImageName)
@@ -93,20 +93,11 @@ steps:
   displayName: 'Build SCSC.ElfSimulator Container Image'
   inputs:
     script: |
+      DockerCli.exe -SwitchLinuxEngine
       cd SCSC.ElfSimulator
       docker build -f .\dockerfile -t elfsimulator:$(Build.BuildNumber) $(Build.SourcesDirectory)
       docker tag elfsimulator:$(Build.BuildNumber) massimobonanni/elfsimulator:$(Build.BuildNumber)
       docker push massimobonanni/elfsimulator:$(Build.BuildNumber)
 
 
-- task: Docker@2
-  enabled: false
-  name: BuildElfSimulatorContainerImage
-  displayName: 'Build SCSC.ElfSimulator Container Image'
-  inputs:
-    containerRegistry: 'DockerHubConnection'
-    repository: 'ElfSimulator'
-    command: 'buildAndPush'
-    Dockerfile: 'SCSC.ElfSimulator/Dockerfile'
-    tags: $(Build.BuildNumber)
 
