@@ -45,3 +45,41 @@ steps:
       !**\obj\**
     searchFolder: '$(System.DefaultWorkingDirectory)'
 
+- task: DotNetCoreCLI@2
+  name: RestoreAPIClientComponent
+  displayName: 'Restore SCSC.APIClient references'
+  inputs:
+    command: 'restore'
+    projects: 'SCSC.APIClient/SCSC.APIClient.csproj'
+    feedsToUse: 'select'
+
+- task: DotNetCoreCLI@2
+  name: BuildAPIClientComponent
+  displayName: 'Build SCSC.APIClient project'
+  inputs:
+    command: 'build'
+    projects: 'SCSC.APIClient/SCSC.APIClient.csproj'
+
+- task: DotNetCoreCLI@2
+  name: RestoreElfSimulatorComponent
+  displayName: 'Restore SCSC.ElfSimulator references'
+  inputs:
+    command: 'restore'
+    projects: 'SCSC.ElfSimulator/SCSC.ElfSimulator.csproj'
+    feedsToUse: 'select'
+
+- task: DotNetCoreCLI@2
+  name: BuildElfSimulatorComponent
+  displayName: 'Build SCSC.ElfSimulator project'
+  inputs:
+    command: 'build'
+    projects: 'SCSC.ElfSimulator.csproj'
+
+- task: Docker@2
+  name: BuildElfSimulatorContainerImage
+  displayName: 'Build SCSC.ElfSimulator Container Image'
+  inputs:
+    containerRegistry: 'DockerHubConnection'
+    command: 'buildAndPush'
+    Dockerfile: 'SCSC.ElfSimulator/Dockerfile'
+    tags: '$(Date:yyyyMMdd)$(Rev:.r)'/
