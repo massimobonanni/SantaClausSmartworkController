@@ -8,6 +8,8 @@ trigger:
    - SCSC.Core
    - SCSC.ElfSimulator
 
+name: ElfSimulator_$(Date:yyyyMMdd)$(Rev:.r)
+
 pool:
   vmImage: windows-2022
 
@@ -38,7 +40,7 @@ steps:
   inputs:
     testSelector: 'testAssemblies'
     testAssemblyVer2: |
-      Tests\*SCSC.Core.Test*.dll
+      Tests\**\*SCSC.Core.Test*.dll
       !**\*TestAdapter.dll
       !**\obj\**
     searchFolder: '$(System.DefaultWorkingDirectory)'
