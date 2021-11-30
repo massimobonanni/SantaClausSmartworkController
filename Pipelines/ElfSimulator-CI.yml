@@ -13,92 +13,116 @@ name: $(Date:yyyyMMdd)$(Rev:.r)
 variables:
   vmImageName: 'ubuntu-latest'
 
-pool:
-  vmImage: $(vmImageName)
+stages:
+- stage: Build
+  jobs:
+  - job: BuildAndTest
+    displayName: 'Build and Test'
+    pool:
+      vmImage: 'windows-latest'
 
-steps:
-- task: DotNetCoreCLI@2
-  name: RestoreCoreComponent
-  displayName: 'Restore SCSC.Core references'
-  inputs:
-    command: 'restore'
-    projects: 'SCSC.Core/SCSC.Core.csproj'
-    feedsToUse: 'select'
+    steps:
+    - task: DotNetCoreCLI@2
+      name: RestoreCoreComponent
+      displayName: 'Restore SCSC.Core references'
+      inputs:
+        command: 'restore'
+        projects: 'SCSC.Core/SCSC.Core.csproj'
+        feedsToUse: 'select'
 
-- task: DotNetCoreCLI@2
-  name: BuildCoreComponent
-  displayName: 'Build SCSC.Core project'
-  inputs:
-    command: 'build'
-    projects: 'SCSC.Core/SCSC.Core.csproj'
+    - task: DotNetCoreCLI@2
+      name: BuildCoreComponent
+      displayName: 'Build SCSC.Core project'
+      inputs:
+        command: 'build'
+        projects: 'SCSC.Core/SCSC.Core.csproj'
 
-- task: DotNetCoreCLI@2
-  name: BuildCoreTests
-  displayName: 'Build SCSC.Core.Test project'
-  inputs:
-    command: 'build'
-    projects: 'Tests/SCSC.Core.Test/SCSC.Core.Test.csproj'
+    - task: DotNetCoreCLI@2
+      name: BuildCoreTests
+      displayName: 'Build SCSC.Core.Test project'
+      inputs:
+        command: 'build'
+        projects: 'Tests/SCSC.Core.Test/SCSC.Core.Test.csproj'
 
-- task: VSTest@2
-  enabled: false
-  inputs:
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: |
-      Tests\**\*SCSC.Core.Test*.dll
-      !**\*TestAdapter.dll
-      !**\obj\**
-    searchFolder: '$(System.DefaultWorkingDirectory)'
+    - task: VSTest@2
+      inputs:
+        testSelector: 'testAssemblies'
+        testAssemblyVer2: |
+          Tests\**\*SCSC.Core.Test*.dll
+          !**\*TestAdapter.dll
+          !**\obj\**
+        searchFolder: '$(System.DefaultWorkingDirectory)'
 
-- task: DotNetCoreCLI@2
-  name: RestoreAPIClientComponent
-  displayName: 'Restore SCSC.APIClient references'
-  inputs:
-    command: 'restore'
-    projects: 'SCSC.APIClient/SCSC.APIClient.csproj'
-    feedsToUse: 'select'
+    - task: DotNetCoreCLI@2
+      name: RestoreAPIClientComponent
+      displayName: 'Restore SCSC.APIClient references'
+      inputs:
+        command: 'restore'
+        projects: 'SCSC.APIClient/SCSC.APIClient.csproj'
+        feedsToUse: 'select'
 
-- task: DotNetCoreCLI@2
-  name: BuildAPIClientComponent
-  displayName: 'Build SCSC.APIClient project'
-  inputs:
-    command: 'build'
-    projects: 'SCSC.APIClient/SCSC.APIClient.csproj'
+    - task: DotNetCoreCLI@2
+      name: BuildAPIClientComponent
+      displayName: 'Build SCSC.APIClient project'
+      inputs:
+        command: 'build'
+        projects: 'SCSC.APIClient/SCSC.APIClient.csproj'
 
-- task: DotNetCoreCLI@2
-  name: RestoreElfSimulatorComponent
-  displayName: 'Restore SCSC.ElfSimulator references'
-  inputs:
-    command: 'restore'
-    projects: 'SCSC.ElfSimulator/SCSC.ElfSimulator.csproj'
-    feedsToUse: 'select'
+    - task: DotNetCoreCLI@2
+      name: RestoreElfSimulatorComponent
+      displayName: 'Restore SCSC.ElfSimulator references'
+      inputs:
+        command: 'restore'
+        projects: 'SCSC.ElfSimulator/SCSC.ElfSimulator.csproj'
+        feedsToUse: 'select'
 
-- task: DotNetCoreCLI@2
-  name: BuildElfSimulatorComponent
-  displayName: 'Build SCSC.ElfSimulator project'
-  inputs:
-    command: 'build'
-    projects: 'SCSC.ElfSimulator/SCSC.ElfSimulator.csproj'
-
-- task: DockerInstaller@0
-  inputs:
-    dockerVersion: '17.09.0-ce'
-
-- task: Docker@2
-  displayName: Login to Docker Hub
-  inputs:
-    command: login
-    containerRegistry: 'DockerHubConnection'
-
-- task: CmdLine@2
-  name: BuildElfSimulatorContainerImage
-  displayName: 'Build SCSC.ElfSimulator Container Image'
-  inputs:
-    script: |
-      DockerCli.exe -SwitchLinuxEngine
-      cd SCSC.ElfSimulator
-      docker build -f .\dockerfile -t elfsimulator:$(Build.BuildNumber) $(Build.SourcesDirectory)
-      docker tag elfsimulator:$(Build.BuildNumber) massimobonanni/elfsimulator:$(Build.BuildNumber)
-      docker push massimobonanni/elfsimulator:$(Build.BuildNumber)
+    - task: DotNetCoreCLI@2
+      name: BuildElfSimulatorComponent
+      displayName: 'Build SCSC.ElfSimulator project'
+      inputs:
+        command: 'build'
+        projects: 'SCSC.ElfSimulator/SCSC.ElfSimulator.csproj'
 
 
+- stage: BuildAndDeployToDockerHub
+  jobs:
+  - job: BuildAndDeployToDockerHub
+    displayName: 'Build and Deploy to Docker Hub'
+    pool:
+      vmImage: 'ubuntu-latest'
+  
+    steps:
+    - task: DotNetCoreCLI@2
+      name: RestoreElfSimulatorComponent
+      displayName: 'Restore SCSC.ElfSimulator references'
+      inputs:
+        command: 'restore'
+        projects: 'SCSC.ElfSimulator/SCSC.ElfSimulator.csproj'
+        feedsToUse: 'select'
 
+    - task: DotNetCoreCLI@2
+      name: BuildElfSimulatorComponent
+      displayName: 'Build SCSC.ElfSimulator project'
+      inputs:
+        command: 'build'
+        projects: 'SCSC.ElfSimulator/SCSC.ElfSimulator.csproj'
+    - task: DockerInstaller@0
+      inputs:
+        dockerVersion: '17.09.0-ce'
+
+    - task: Docker@2
+      displayName: Login to Docker Hub
+      inputs:
+        command: login
+        containerRegistry: 'DockerHubConnection'
+
+    - task: CmdLine@2
+      name: BuildElfSimulatorContainerImage
+      displayName: 'Build SCSC.ElfSimulator Container Image'
+      inputs:
+        script: |
+          DockerCli.exe -SwitchLinuxEngine
+          cd SCSC.ElfSimulator
+          docker build -f .\dockerfile -t elfsimulator:$(Build.BuildNumber) $(Build.SourcesDirectory)
+          docker tag elfsimulator:$(Build.BuildNumber) massimobonanni/elfsimulator:$(Build.BuildNumber)
+          docker push massimobonanni/elfsimulator:$(Build.BuildNumber)
