@@ -3,6 +3,9 @@
     "SCSC.ElfSimulator": {
       "commandName": "Project",
       "commandLineArgs": "-f \"D:\\Sviluppo\\SantaClausSmartworkController\\SCSC.ElfSimulator\\Configurations\\fullConfig.json\""
+    },
+    "Docker": {
+      "commandName": "Docker"
     }
   }
 }

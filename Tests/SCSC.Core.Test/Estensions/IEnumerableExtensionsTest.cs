@@ -12,11 +12,13 @@ namespace SCSC.Core.Test.Estensions
     {
         #region [ Method CalculateAverageSpeed]
         [Fact]
-        public void CalculateAverageSpeed_ArgumentNull_ThrowException()
+        public void CalculateAverageSpeed_ArgumentNull_ReturnZero()
         {
             IEnumerable<PackageInfoModel> target = null;
 
-            Assert.Throws<NullReferenceException>(() => target.CalculateAverageSpeed(new TimeSpan(9, 0, 0), new TimeSpan(18, 0, 0)));
+            var actual = target.CalculateAverageSpeed(new TimeSpan(9, 0, 0), new TimeSpan(18, 0, 0));
+
+            Assert.Equal(0.0, actual);
         }
 
         [Theory()]
@@ -34,7 +36,7 @@ namespace SCSC.Core.Test.Estensions
         [MemberData(nameof(PackageInfoModelDataGenerator.GetPackagesForAverageSpeed),
             MemberType = typeof(PackageInfoModelDataGenerator))]
         public void CalculateAverageSpeed_CalcutateAverageSpeed(
-            IEnumerable<PackageInfoModel> packages, DateTimeOffset calculationTime, 
+            IEnumerable<PackageInfoModel> packages, DateTimeOffset calculationTime,
             TimeSpan startWorkTime, TimeSpan endWorkTime, double expectedSpeed)
         {
             var actualSpeed = packages.CalculateAverageSpeed(startWorkTime, endWorkTime, calculationTime);

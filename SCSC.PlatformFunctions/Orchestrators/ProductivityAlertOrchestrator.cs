@@ -63,9 +63,9 @@ namespace SCSC.PlatformFunctions.Orchestrators
             [OrchestrationTrigger] IDurableOrchestrationContext context,
             ILogger logger)
         {
-            logger.LogInformation($"[START ORCHESTRATOR] --> {nameof(ProductivityAlertOrchestrator.ProductivityAlert)}");
             var createAlertInfo = context.GetInput<CreateAlertModel>();
             context.SetCustomStatus(createAlertInfo);
+            logger.LogInformation($"[START ORCHESTRATOR] --> {nameof(ProductivityAlertOrchestrator.ProductivityAlert)} {createAlertInfo.AlertName} for elf {createAlertInfo.ElfId}");
 
             var alertInfo = createAlertInfo.ExtractFromData<AlertInfo>();
 
