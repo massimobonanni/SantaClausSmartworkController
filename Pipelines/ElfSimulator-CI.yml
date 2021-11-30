@@ -9,7 +9,7 @@ trigger:
    - SCSC.ElfSimulator
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-2022
 
 steps:
 - task: DotNetCoreCLI@2
