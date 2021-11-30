@@ -8,7 +8,8 @@
       "operationDurationMax": 180,
       "breakDuration": 30,
       "startWorkTime": "09:00:00",
-      "endWorkTime": "20:00:00"
+      "endWorkTime": "20:00:00",
+      "lazyPercentage": 50
     },
     {
       "id": "bushy_evergreen",
@@ -26,7 +27,8 @@
       "operationDurationMax": 300,
       "breakDuration": 30,
       "startWorkTime": "09:00:00",
-      "endWorkTime": "20:00:00"
+      "endWorkTime": "20:00:00",
+      "lazyPercentage": 75
     },
     {
       "id": "shinny_upatree",

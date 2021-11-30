@@ -18,7 +18,7 @@ namespace SCSC.PlatformFunctions.Orchestrators
             public string ElfId { get; set; }
             public string ElfEntityName { get; set; }
             public string ElfName { get; set; }
-            public IEnumerable<PackageInfoModel> Packages { get; set; }
+            public List<PackageInfoModel> Packages { get; set; }
         }
 
         public class ArchivePackage : TableEntity

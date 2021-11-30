@@ -130,8 +130,8 @@ namespace SCSC.ElfSimulator
                 Configuration = new ElfConfigurationModel()
                 {
                     Name = elf.Name,
-                    StartWorkTime=elf.StartWorkTime,
-                    EndWorkTime=elf.EndWorkTime
+                    StartWorkTime = elf.StartWorkTime,
+                    EndWorkTime = elf.EndWorkTime
                 }
             }, default);
 
@@ -175,7 +175,9 @@ namespace SCSC.ElfSimulator
                         }
                     }
 
-                    await Task.Delay(elf.BreakDurationMaxInSec * 1000, ct);
+                    var breakDuration = CalculateBreakDuration(elf);
+
+                    await Task.Delay(breakDuration, ct);
                 }
                 catch (TaskCanceledException)
                 {
@@ -192,6 +194,19 @@ namespace SCSC.ElfSimulator
                 }
             }
 
+        }
+
+        private static int CalculateBreakDuration(ElfConfiguration elf)
+        {
+            int duration = 0;
+            var lazyProbability = rand.Next(0, 100);
+            duration = rand.Next(1, elf.BreakDurationMaxInSec) * 1000;
+            if (elf.LazyPercentage != 0 && elf.LazyPercentage >= lazyProbability)
+            {
+                WriteLog($"{DateTime.Now} > Elf {elf.Name} is lazy, he does not want to work", ConsoleColor.Blue);
+                duration *= 20;
+            }
+            return duration;
         }
     }
 }

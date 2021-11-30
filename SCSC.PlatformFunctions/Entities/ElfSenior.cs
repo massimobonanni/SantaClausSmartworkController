@@ -125,7 +125,7 @@ namespace SCSC.PlatformFunctions.Entities
         #region [ Internal Methods ]
         private Task CleanPackagesAsync()
         {
-            var packagesToRemove = this.Packages.ExtractOldItems(TimeSpan.FromDays(1));
+            var packagesToRemove = this.Packages.ExtractOldItems(TimeSpan.FromDays(1)).ToList();
 
             if (packagesToRemove.Any())
             {

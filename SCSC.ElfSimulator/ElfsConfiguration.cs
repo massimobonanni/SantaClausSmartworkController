@@ -37,5 +37,8 @@ namespace SCSC.ElfSimulator
 
         [JsonPropertyName("endWorkTime")]
         public string EndWorkTime { get; set; } = "18:00:00";
+
+        [JsonPropertyName("lazyPercentage")]
+        public double LazyPercentage { get; set; } = 0.0;
     }
 }
