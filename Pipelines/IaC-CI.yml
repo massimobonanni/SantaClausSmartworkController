@@ -1,0 +1,29 @@
+trigger:
+- master
+
+name: Compile Bicep files
+
+variables:
+  vmImageName: 'ubuntu-latest'
+
+  templateFile: './main.bicep'
+  outDir: './out'
+pool:
+  vmImage: $(vmImageName)
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: ''
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az --version
+      az bicep install
+      az bicep build --file $(templateFile) --outdir $(outdir)
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(outdir)'
+    ArtifactName: 'IaC'
+    publishLocation: 'Container'
