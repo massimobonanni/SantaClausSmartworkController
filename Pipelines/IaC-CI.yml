@@ -1,0 +1,36 @@
+trigger:
+ branches:
+  include:
+     - main
+ paths:
+  include:
+   - SCSC.IaC
+
+
+name: SCSC_IaC_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+variables:
+  vmImageName: 'ubuntu-latest'
+  azureSubscription: 'Visual Studio Enterprise (2) Connection'
+  templateFile: './SCSC.IaC/main.bicep'
+  outDir: './SCSC.IaC/out'
+pool:
+  vmImage: $(vmImageName)
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: $(azureSubscription)
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      mkdir $(outdir)
+      az --version
+      az bicep install
+      az bicep build --file $(templateFile) --outdir $(outdir)
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(outdir)'
+    ArtifactName: 'IaC'
+    publishLocation: 'Container'

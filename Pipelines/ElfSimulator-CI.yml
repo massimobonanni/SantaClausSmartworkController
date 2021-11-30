@@ -1,0 +1,47 @@
+trigger:
+ branches:
+  include:
+     - main
+ paths:
+  include:
+   - SCSC.APIClient
+   - SCSC.Core
+   - SCSC.ElfSimulator
+
+name: ElfSimulator_$(Date:yyyyMMdd)$(Rev:.r)
+
+pool:
+  vmImage: windows-2022
+
+steps:
+- task: DotNetCoreCLI@2
+  name: RestoreCoreComponent
+  displayName: 'Restore SCSC.Core references'
+  inputs:
+    command: 'restore'
+    projects: 'SCSC.Core/SCSC.Core.csproj'
+    feedsToUse: 'select'
+
+- task: DotNetCoreCLI@2
+  name: BuildCoreComponent
+  displayName: 'Build SCSC.Core project'
+  inputs:
+    command: 'build'
+    projects: 'SCSC.Core/SCSC.Core.csproj'
+
+- task: DotNetCoreCLI@2
+  name: BuildCoreTests
+  displayName: 'Build SCSC.Core.Test project'
+  inputs:
+    command: 'build'
+    projects: 'Tests/SCSC.Core.Test/SCSC.Core.Test.csproj'
+
+- task: VSTest@2
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      Tests\**\*SCSC.Core.Test*.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+
