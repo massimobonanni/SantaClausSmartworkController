@@ -10,9 +10,6 @@ trigger:
 
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
-variables:
-  vmImageName: 'ubuntu-latest'
-
 stages:
 - stage: Build
   jobs:
@@ -84,10 +81,11 @@ stages:
         projects: 'SCSC.ElfSimulator/SCSC.ElfSimulator.csproj'
 
 
-- stage: BuildAndDeployToDockerHub
+- stage: Deploy
+  dependsOn: Build
   jobs:
   - job: BuildAndDeployToDockerHub
-    displayName: 'Build and Deploy to Docker Hub'
+    displayName: 'Deploy to Docker Hub'
     pool:
       vmImage: 'ubuntu-latest'
   
@@ -106,6 +104,7 @@ stages:
       inputs:
         command: 'build'
         projects: 'SCSC.ElfSimulator/SCSC.ElfSimulator.csproj'
+
     - task: DockerInstaller@0
       inputs:
         dockerVersion: '17.09.0-ce'
@@ -121,7 +120,6 @@ stages:
       displayName: 'Build SCSC.ElfSimulator Container Image'
       inputs:
         script: |
-          DockerCli.exe -SwitchLinuxEngine
           cd SCSC.ElfSimulator
           docker build -f .\dockerfile -t elfsimulator:$(Build.BuildNumber) $(Build.SourcesDirectory)
           docker tag elfsimulator:$(Build.BuildNumber) massimobonanni/elfsimulator:$(Build.BuildNumber)
