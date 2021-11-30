@@ -8,11 +8,10 @@ trigger:
    - SCSC.Core
    - SCSC.ElfSimulator
 
-name: ElfSimulator_$(Date:yyyyMMdd)$(Rev:.r)
+name: $(Date:yyyyMMdd)$(Rev:.r)
 
 variables:
   vmImageName: 'windows-2022'
-  dockerImageTag : $(Date:yyyyMMdd)$(Rev:.r)
 
 pool:
   vmImage: $(vmImageName)
@@ -93,4 +92,4 @@ steps:
     repository: 'ElfSimulator'
     command: 'buildAndPush'
     Dockerfile: 'SCSC.ElfSimulator/Dockerfile'
-    tags: $(dockerImageTag)
+    tags: $(Build.BuildNumber)
