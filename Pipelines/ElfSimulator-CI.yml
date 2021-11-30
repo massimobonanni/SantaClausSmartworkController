@@ -125,6 +125,6 @@ stages:
       inputs:
         script: |
           cd SCSC.ElfSimulator
-          docker build -f .\Dockerfile -t elfsimulator:$(Build.BuildNumber) $(Build.SourcesDirectory)
+          docker build -f Dockerfile -t elfsimulator:$(Build.BuildNumber) $(Build.SourcesDirectory)
           docker tag elfsimulator:$(Build.BuildNumber) massimobonanni/elfsimulator:$(Build.BuildNumber)
           docker push $(dockerId)/elfsimulator:$(Build.BuildNumber)
