@@ -1,0 +1,45 @@
+﻿@model SCSC.AdminWeb.Models.Alerts.AlertInfoViewModel
+
+@{
+    ViewData["Title"] = @Model.AlertName + " Details";
+}
+
+<h2 class="align-content-center text-secondary"><img src="~/images/Alert.png" height=50 />&nbsp; Alert Details</h2>
+<br />
+<div>
+    <h3>@Model.AlertName</h3>
+    <hr />
+    <dl class="row">
+
+        <dt class="col-sm-3">
+            Elf ID
+        </dt>
+        <dd class="col-sm-9">
+            @Model.ElfId
+        </dd>
+        <dt class="col-sm-3">
+            Alert Type
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Type.ToString()
+        </dd>
+        <dt class="col-sm-3">
+            Status
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Status)
+        </dd>
+        <dt class="col-sm-3">
+            <span class="align-top">Alert Payload</span>
+        </dt>
+        <dd class="col-sm-9">
+            <textarea id="dataTextArea" name="dataTextArea" class="align-top">
+                @Model.Data
+            </textarea>
+        </dd>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Delete", "Delete", new { id = Model.Id }) |
+    <a asp-action="Index">Back to List</a>
+</div>

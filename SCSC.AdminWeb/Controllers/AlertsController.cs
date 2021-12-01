@@ -30,9 +30,13 @@ namespace SCSC.AdminWeb.Controllers
         }
 
         // GET: AlertsController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(string id,CancellationToken token)
         {
-            return View();
+            var alert = await this.alertsRestClient.GetAlertAsync(id, token);
+            if (alert == null)
+                return NotFound();
+            var model = new AlertInfoViewModel(alert);
+            return View(model);
         }
 
         // GET: AlertsController/Create
