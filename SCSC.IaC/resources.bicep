@@ -20,7 +20,7 @@ resource dataStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   }
 }
 
-var dataStorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${dataStorage.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(dataStorage.id, dataStorage.apiVersion).keys[0].value}'
+var dataStorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${dataStorage.name};AccountKey=${listKeys(dataStorage.id, dataStorage.apiVersion).keys[0].value}'
 
 resource functionStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   kind: 'StorageV2'
@@ -31,7 +31,7 @@ resource functionStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   }
 }
 
-var functionStorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${functionStorage.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(functionStorage.id, functionStorage.apiVersion).keys[0].value}'
+var functionStorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${functionStorage.name};AccountKey=${listKeys(functionStorage.id, functionStorage.apiVersion).keys[0].value}'
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: appInsightsName
