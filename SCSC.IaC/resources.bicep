@@ -132,7 +132,7 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           name: 'AzureWebJobsStorage'
-          value: keyVault::functionStorageConnectionStringSecret.properties.secretUri
+          value: '@Microsoft.KeyVault(SecretUri=${keyVault::functionStorageConnectionStringSecret.properties.secretUri})'
         }
         {
           'name': 'FUNCTIONS_EXTENSION_VERSION'
@@ -144,11 +144,11 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           name: 'PackagesStorageAccount'
-          value: keyVault::dataStorageConnectionStringSecret.properties.secretUri
+          value: '@Microsoft.KeyVault(SecretUri=${keyVault::dataStorageConnectionStringSecret.properties.secretUri})'
         }
         {
           name: 'SendGridApiKey'
-          value: keyVault::sendGridApiKeySecret.properties.secretUri
+          value: '@Microsoft.KeyVault(SecretUri=${keyVault::sendGridApiKeySecret.properties.secretUri})'
         }
         {
           name: 'EmailNotificationFrom'
@@ -156,11 +156,11 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           name: 'TwilioAccountSid'
-          value: keyVault::twilioAccountSidSecret.properties.secretUri
+          value: '@Microsoft.KeyVault(SecretUri=${keyVault::twilioAccountSidSecret.properties.secretUri})'
         }
         {
           name: 'TwilioAuthToken'
-          value: keyVault::twilioAuthTokenSecret.properties.secretUri
+          value: '@Microsoft.KeyVault(SecretUri=${keyVault::twilioAuthTokenSecret.properties.secretUri})'
         }
         {
           name: 'TwilioFromNumber'
