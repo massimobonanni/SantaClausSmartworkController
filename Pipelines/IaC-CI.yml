@@ -14,7 +14,7 @@ variables:
   azureSubscription: 'Visual Studio Enterprise (2) Connection'
   templateFile: './SCSC.IaC/main.bicep'
   outDir: './SCSC.IaC/out'
-  azureLocation: 'northeurope'
+  azureLocation: 'norwayeast'
 
 stages:
 - stage: Build
