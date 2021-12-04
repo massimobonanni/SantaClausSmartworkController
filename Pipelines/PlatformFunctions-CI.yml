@@ -133,6 +133,6 @@ stages:
           azureSubscription: 'Visual Studio Enterprise (2) Connection'
           appType: 'functionApp'
           appName: 'scscdemoapi'
-          package: '$(System.ArtifactsDirectory)/**/*.zip'
+          package: '$(System.ArtifactsDirectory)/**/$(Build.BuildId).zip'
           deploymentMethod: 'auto'
 
