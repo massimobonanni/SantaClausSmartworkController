@@ -1,19 +1,129 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
+ branches:
+  include:
+     - main
+ paths:
+  include:
+   - SCSC.Core
+   - SCSC.PlatformFunctions
+   - Tests/SCSC.PlatformFunctions.Test
 
-pool:
-  vmImage: ubuntu-latest
+name: $(Date:yyyyMMdd)$(Rev:.r)
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  vmImage: 'windows-latest'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+stages:
+- stage: Build
+  jobs:
+  - job: BuildAndTest
+    displayName: 'Build and Test'
+    pool:
+      vmImage: $(vmImage)
+
+    steps:
+    - task: UseDotNet@2      
+      inputs:
+        packageType: 'sdk'
+        version: '3.x'
+      displayName: 'Use .NET Core SDK 3.x'
+
+    - task: DotNetCoreCLI@2
+      name: RestoreCoreComponent
+      displayName: 'Restore SCSC.Core references'
+      inputs:
+        command: 'restore'
+        projects: 'SCSC.Core/SCSC.Core.csproj'
+        feedsToUse: 'select'
+
+    - task: DotNetCoreCLI@2
+      name: BuildCoreComponent
+      displayName: 'Build SCSC.Core project'
+      inputs:
+        command: 'build'
+        projects: 'SCSC.Core/SCSC.Core.csproj'
+
+    - task: DotNetCoreCLI@2
+      name: BuildCoreTests
+      displayName: 'Build SCSC.Core.Test project'
+      inputs:
+        command: 'build'
+        projects: 'Tests/SCSC.Core.Test/SCSC.Core.Test.csproj'
+
+    - task: VSTest@2
+      inputs:
+        testSelector: 'testAssemblies'
+        testAssemblyVer2: |
+          Tests\**\*SCSC.Core.Test*.dll
+          !**\*TestAdapter.dll
+          !**\obj\**
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+
+    - task: DotNetCoreCLI@2
+      name: RestorePlatformFunctions
+      displayName: 'Restore SCSC.PlatformFunctions references'
+      inputs:
+        command: 'restore'
+        projects: 'SCSC.PlatformFunctions/SCSC.PlatformFunctions.csproj'
+        feedsToUse: 'select'
+
+    - task: DotNetCoreCLI@2
+      name: BuildPlatformFunctions
+      displayName: 'Build SCSC.PlatformFunctions project'
+      inputs:
+        command: 'build'
+        projects: 'SCSC.PlatformFunctions/SCSC.PlatformFunctions.csproj'
+
+    - task: DotNetCoreCLI@2
+      name: BuildPlatformFunctionsTests
+      displayName: 'Build SCSC.PlatformFunctions.Test project'
+      inputs:
+        command: 'build'
+        projects: 'Tests/SCSC.PlatformFunctions.Test/SCSC.PlatformFunctions.Test.csproj'
+
+    - task: VSTest@2
+      inputs:
+        testSelector: 'testAssemblies'
+        testAssemblyVer2: |
+          Tests\**\*SCSC.PlatformFunctions.Test*.dll
+          !**\*TestAdapter.dll
+          !**\obj\**
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: 'SCSC.PlatformFunctions/SCSC.PlatformFunctions.csproj'
+        arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
+      displayName: 'Publish solution'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'platformFunctions'
+        publishLocation: 'Container'
+
+- stage: Deploy
+  dependsOn: Build
+  jobs:
+    - job: DeployPlatformFunctionsToAzure
+      displayName: 'Deploy Platform Functions to Azure'
+      pool:
+        vmImage: $(vmImage)
+
+      steps:
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'platformFunctions'
+          downloadPath: '$(System.ArtifactsDirectory)'
+      - task: AzureFunctionApp@1
+        inputs:
+          azureSubscription: 'Visual Studio Enterprise (2) Connection'
+          appType: 'functionApp'
+          appName: 'scscdemoapi'
+          package: '$(System.ArtifactsDirectory)/**/*.zip'
+          deploymentMethod: 'auto'
+
