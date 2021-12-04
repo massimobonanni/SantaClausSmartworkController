@@ -13,7 +13,7 @@ namespace SCSC.ElfSimulator.Fakers
         {
             var package = new PackageStartedModel();
             package.PackageId = Guid.NewGuid().ToString();
-            package.Timestamp = DateTimeOffset.Now;
+            package.Timestamp = DateTimeOffset.Now.ToUniversalTime();
             package.GiftDescription = ToysFaker.Toy();
             package.KidName = $"{Faker.Name.First()} {Faker.Name.Last()}";
             return package;

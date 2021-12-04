@@ -145,7 +145,7 @@ namespace SCSC.ElfSimulator
                 PackageEndedModel packageEnded = null;
                 try
                 {
-                    if (DateTimeOffset.Now.TimeOfDay >= startJobTime && DateTimeOffset.Now.TimeOfDay <= endJobTime)
+                    if (DateTimeOffset.Now.ToUniversalTime().TimeOfDay >= startJobTime && DateTimeOffset.Now.ToUniversalTime().TimeOfDay <= endJobTime)
                     {
                         WriteLog($"{DateTime.Now} > Elf {elf.Name} begin packaging", ConsoleColor.Green);
                         packageStarted = PackageFaker.PackageStarted();
@@ -159,7 +159,7 @@ namespace SCSC.ElfSimulator
                         packageEnded = new PackageEndedModel()
                         {
                             PackageId = packageStarted.PackageId,
-                            Timestamp = DateTimeOffset.Now
+                            Timestamp = DateTimeOffset.Now.ToUniversalTime()
                         };
                         await restClient.PackageEndedAsync(elf.Id, packageEnded, default);
 
@@ -186,7 +186,7 @@ namespace SCSC.ElfSimulator
                         packageEnded = new PackageEndedModel()
                         {
                             PackageId = packageStarted.PackageId,
-                            Timestamp = DateTimeOffset.Now
+                            Timestamp = DateTimeOffset.Now.ToUniversalTime()
                         };
                         await restClient.PackageEndedAsync(elf.Id, packageEnded, default);
                     }
