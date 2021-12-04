@@ -63,5 +63,7 @@ stages:
         azureSubscription: '$(azureSubscription)'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
-        inlineScript: 'az deployment sub create --location $(azureLocation) --template-file main.json'
-        workingDirectory: '$(System.ArtifactsDirectory)'
+        inlineScript: |
+          echo $(System.ArtifactsDirectory)
+          az deployment sub create --location $(azureLocation) --template-file main.json
+        workingDirectory: '$(System.ArtifactsDirectory)/IaC'
