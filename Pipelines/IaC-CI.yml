@@ -65,5 +65,5 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: |
           echo $(System.ArtifactsDirectory)
-          az deployment sub create --location $(azureLocation) --template-file main.json
+          az deployment sub create --name $(Build.BuildNumber) --location $(azureLocation) --template-file main.json
         workingDirectory: '$(System.ArtifactsDirectory)/IaC'
