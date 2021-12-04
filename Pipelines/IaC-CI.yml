@@ -7,30 +7,63 @@ trigger:
    - SCSC.IaC
 
 
-name: SCSC_IaC_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+name: $(Date:yyyyMMdd)$(Rev:.r)
 
 variables:
   vmImageName: 'ubuntu-latest'
   azureSubscription: 'Visual Studio Enterprise (2) Connection'
   templateFile: './SCSC.IaC/main.bicep'
   outDir: './SCSC.IaC/out'
-pool:
-  vmImage: $(vmImageName)
+  azureLocation: 'norwayeast'
 
-steps:
-- task: AzureCLI@2
-  inputs:
-    azureSubscription: $(azureSubscription)
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: |
-      mkdir $(outdir)
-      az --version
-      az bicep install
-      az bicep build --file $(templateFile) --outdir $(outdir)
+stages:
+- stage: Build
+  jobs:
+  - job: BuildAndTest
+    displayName: 'Build'
+    pool:
+      vmImage: $(vmImageName)
+    
+    steps:
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: $(azureSubscription)
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          mkdir $(outdir)
+          az --version
+          az bicep install
+          az bicep build --file $(templateFile) --outdir $(outdir)
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(outdir)'
-    ArtifactName: 'IaC'
-    publishLocation: 'Container'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(outdir)'
+        ArtifactName: 'IaC'
+        publishLocation: 'Container'
+        
+- stage: DeployToAzure
+  dependsOn: Build
+  jobs:
+  - job: DeployToAzure
+    displayName: 'Deploy to Azure'
+    pool:
+      vmImage: $(vmImageName)
+    
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'IaC'
+        downloadPath: '$(System.ArtifactsDirectory)'
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: '$(azureSubscription)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo $(System.ArtifactsDirectory)
+          az deployment sub create --location $(azureLocation) --template-file main.json
+        workingDirectory: '$(System.ArtifactsDirectory)/IaC'
