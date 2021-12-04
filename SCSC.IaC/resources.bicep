@@ -58,7 +58,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01'= {
     enabledForTemplateDeployment: false
     enableSoftDelete: true
     softDeleteRetentionInDays: 90
-    enableRbacAuthorization: false
+    enableRbacAuthorization: true
     enablePurgeProtection: true
     vaultUri: 'https://${keyVaultName}.vault.azure.net/'
   }
