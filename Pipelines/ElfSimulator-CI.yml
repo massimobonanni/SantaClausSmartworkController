@@ -7,6 +7,7 @@ trigger:
    - SCSC.APIClient
    - SCSC.Core
    - SCSC.ElfSimulator
+   - Tests/SCSC.Core.Test
 
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
