@@ -73,6 +73,7 @@ stages:
       inputs:
         command: 'build'
         projects: 'SCSC.PlatformFunctions/SCSC.PlatformFunctions.csproj'
+        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
 
     - task: DotNetCoreCLI@2
       name: BuildPlatformFunctionsTests
@@ -97,6 +98,14 @@ stages:
         projects: 'SCSC.PlatformFunctions/SCSC.PlatformFunctions.csproj'
         arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
       displayName: 'Publish solution'
+
+    - task: ArchiveFiles@2
+      displayName: 'Create deploy zip'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
 
     - task: PublishBuildArtifacts@1
       inputs:
