@@ -14,6 +14,7 @@ variables:
   azureSubscription: 'Visual Studio Enterprise (2) Connection'
   templateFile: './SCSC.IaC/main.bicep'
   outDir: './SCSC.IaC/out'
+  azureLocation: 'northeurope'
 
 stages:
 - stage: Build
@@ -40,3 +41,27 @@ stages:
         PathtoPublish: '$(outdir)'
         ArtifactName: 'IaC'
         publishLocation: 'Container'
+        
+- stage: DeployToAzure
+  dependsOn: Build
+  jobs:
+  - job: DeployToAzure
+    displayName: 'Deploy to Azure'
+    pool:
+      vmImage: $(vmImageName)
+    
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'IaC'
+        downloadPath: '$(System.ArtifactsDirectory)'
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: '$(azureSubscription)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: 'az deployment sub create --location $(azureLocation) --template-file main.json'
+        workingDirectory: '$(System.ArtifactsDirectory)'
