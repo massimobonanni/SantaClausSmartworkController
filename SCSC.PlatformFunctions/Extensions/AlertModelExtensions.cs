@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,10 @@ namespace SCSC.Core.Models
                 if (source.Data is JObject)
                 {
                     return ((JObject)source.Data).ToObject<T>();
+                }
+                else if (source.Data is string)
+                {
+                    return JsonConvert.DeserializeObject<T>((string)source.Data);
                 }
                 else
                 {

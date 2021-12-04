@@ -88,7 +88,7 @@ namespace SCSC.PlatformFunctions.Entities
                     innerPackage.KidName = package.KidName;
                     innerPackage.PackageId = package.PackageId;
                     this.Packages.Add(innerPackage);
-                    this.LastUpdate = DateTimeOffset.Now;
+                    this.LastUpdate = DateTimeOffset.Now.ToUniversalTime();
                 }
             }
 

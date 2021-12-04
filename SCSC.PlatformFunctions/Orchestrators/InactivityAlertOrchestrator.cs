@@ -86,7 +86,7 @@ namespace SCSC.PlatformFunctions.Orchestrators
                         if (!string.IsNullOrWhiteSpace(alertInfo.SMSToNotify))
                         {
                             var notification = new AlertNotificationActivity.SmsInfoModel();
-                            notification.Message = $"The elf {createAlertInfo.ElfId} is inactive since {inactivityMinutes} minutes";
+                            notification.Message = $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes";
                             notification.FromPhoneNumber = this._configuration.GetValue<string>("TwilioFromNumber");
                             notification.ToPhoneNumber = alertInfo.SMSToNotify;
                             await context.CallActivityAsync(nameof(AlertNotificationActivity.SendSMS), notification);
@@ -97,7 +97,7 @@ namespace SCSC.PlatformFunctions.Orchestrators
                             var notification = new AlertNotificationActivity.EmailInfoModel();
                             notification.From = this._configuration.GetValue<string>("EmailNotificationFrom");
                             notification.Subject = $"Alert for elf {createAlertInfo.ElfId}";
-                            notification.Body = $"The elf {createAlertInfo.ElfId} is inactive since {inactivityMinutes} minutes, more than {alertInfo.MaxInactivityTimeInMinutes} minutes";
+                            notification.Body = $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes, more than {alertInfo.MaxInactivityTimeInMinutes} minutes";
                             notification.Tos = new List<string>() { alertInfo.EmailToNotify };
                             await context.CallActivityAsync(nameof(AlertNotificationActivity.SendEmail), notification);
                         }
