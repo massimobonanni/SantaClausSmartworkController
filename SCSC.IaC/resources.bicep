@@ -52,7 +52,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01'= {
       name: 'standard'
       family:  'A'
     }
-    tenantId: environment().authentication.tenant 
+    tenantId: subscription().tenantId 
     enabledForDeployment: false
     enabledForDiskEncryption: false
     enabledForTemplateDeployment: false
