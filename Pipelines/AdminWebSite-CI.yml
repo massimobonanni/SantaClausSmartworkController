@@ -1,0 +1,99 @@
+trigger:
+ branches:
+  include:
+     - main
+ paths:
+  include:
+   - SCSC.Core
+   - SCSC.APIClient
+   - SCSC.AdminWeb
+
+name: $(Date:yyyyMMdd)$(Rev:.r)
+
+variables:
+  vmImage: 'windows-latest'
+
+stages:
+- stage: Build
+  jobs:
+  - job: BuildAndTest
+    displayName: 'Build and Test'
+    pool:
+      vmImage: $(vmImage)
+
+    steps:
+    - task: DotNetCoreCLI@2
+      name: RestoreCoreComponent
+      displayName: 'Restore SCSC.Core references'
+      inputs:
+        command: 'restore'
+        projects: 'SCSC.Core/SCSC.Core.csproj'
+        feedsToUse: 'select'
+
+    - task: DotNetCoreCLI@2
+      name: BuildCoreComponent
+      displayName: 'Build SCSC.Core project'
+      inputs:
+        command: 'build'
+        projects: 'SCSC.Core/SCSC.Core.csproj'
+
+    - task: DotNetCoreCLI@2
+      name: BuildCoreTests
+      displayName: 'Build SCSC.Core.Test project'
+      inputs:
+        command: 'build'
+        projects: 'Tests/SCSC.Core.Test/SCSC.Core.Test.csproj'
+
+    - task: VSTest@2
+      inputs:
+        testSelector: 'testAssemblies'
+        testAssemblyVer2: |
+          Tests\**\*SCSC.Core.Test*.dll
+          !**\*TestAdapter.dll
+          !**\obj\**
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+
+    - task: DotNetCoreCLI@2
+      name: RestoreAPIClientComponent
+      displayName: 'Restore SCSC.APIClient references'
+      inputs:
+        command: 'restore'
+        projects: 'SCSC.APIClient/SCSC.APIClient.csproj'
+        feedsToUse: 'select'
+
+    - task: DotNetCoreCLI@2
+      name: BuildAPIClientComponent
+      displayName: 'Build SCSC.APIClient project'
+      inputs:
+        command: 'build'
+        projects: 'SCSC.APIClient/SCSC.APIClient.csproj'
+
+    - task: DotNetCoreCLI@2
+      name: RestoreAdminWeb
+      displayName: 'Restore SCSC.AdminWeb references'
+      inputs:
+        command: 'restore'
+        projects: 'SCSC.AdminWeb/SCSC.AdminWeb.csproj'
+        feedsToUse: 'select'
+
+    - task: DotNetCoreCLI@2
+      name: BuildAdminWeb
+      displayName: 'Build SCSC.AdminWeb project'
+      inputs:
+        command: 'build'
+        projects: 'SCSC.AdminWeb/SCSC.AdminWeb.csproj'
+        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
+    
+    - task: ArchiveFiles@2
+      displayName: 'Create deploy zip'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'adminWeb'
+        publishLocation: 'Container'
