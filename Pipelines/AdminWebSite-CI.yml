@@ -82,15 +82,16 @@ stages:
       inputs:
         command: 'build'
         projects: 'SCSC.AdminWeb/SCSC.AdminWeb.csproj'
-        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
-    
-    - task: ArchiveFiles@2
-      displayName: 'Create deploy zip'
+        arguments: --no-restore --configuration Release
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish SCSC.AdminWeb project'
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
-        includeRootFolder: false
-        archiveType: zip
-        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        command: publish
+        projects: 'SCSC.AdminWeb/SCSC.AdminWeb.csproj'
+        publishWebProjects: False
+        arguments: '--no-build --configuration $(BuildConfiguration) --output $(Build.StagingDirectory)'
+        zipAfterPublish: True
 
     - task: PublishBuildArtifacts@1
       inputs:
@@ -120,4 +121,4 @@ stages:
           azureSubscription: 'Visual Studio Enterprise (2) Connection'
           appType: 'webApp'
           WebAppName: 'scscdemoadmin'
-          packageForLinux: '$(System.ArtifactsDirectory)/**/$(Build.BuildId).zip'
+          packageForLinux: '$(System.ArtifactsDirectory)/**/*.zip'
