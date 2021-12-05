@@ -82,7 +82,6 @@ stages:
       inputs:
         command: 'build'
         projects: 'SCSC.AdminWeb/SCSC.AdminWeb.csproj'
-        arguments: --no-restore --configuration Release
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish SCSC.AdminWeb project'
@@ -90,7 +89,7 @@ stages:
         command: 'publish'
         projects: 'SCSC.AdminWeb/SCSC.AdminWeb.csproj'
         publishWebProjects: False
-        arguments: '--configuration $(BuildConfiguration) --output $(Build.StagingDirectory)'
+        arguments: '--output $(Build.StagingDirectory)'
         zipAfterPublish: True
 
     - task: PublishBuildArtifacts@1
