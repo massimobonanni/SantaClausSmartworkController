@@ -97,6 +97,13 @@ resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01'= {
       value: ''
     }
   }
+
+  resource functionAppDefaultCodeSecret 'secrets' = {
+    name: 'FunctionAppDefaultCode'
+    properties: {
+      value: listKeys(functionApp.id,functionApp.apiVersion).functionKeys.default
+    }
+  }
 }
 
 resource functionAppPlan 'Microsoft.Web/serverfarms@2020-10-01' = {
@@ -200,12 +207,42 @@ resource webAppPlan 'Microsoft.Web/serverfarms@2020-10-01' = {
 resource adminAppService 'Microsoft.Web/sites@2021-02-01' = {
   name: adminAppName
   location: location
+  identity:{
+    type: 'SystemAssigned'
+  }
   properties: {
     serverFarmId: webAppPlan.id
     siteConfig:{
       netFrameworkVersion: '5.0'
+      appSettings:[
+        {
+          name: 'APISettings:BaseUrl'
+          value: 'https://${functionApp.properties.defaultHostName}'
+        }
+        {
+          name: 'APISettings:ApiKey'
+          value: '@Microsoft.KeyVault(SecretUri=${keyVault::functionAppDefaultCodeSecret.properties.secretUri})'
+        }
+      ]
     }
   }
+  dependsOn:[
+    keyVault
+  ]
+}
+
+resource adminAppServiceKeyVaultAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid('Key Vault Secret User', adminAppName, subscription().subscriptionId)
+  scope: keyVault
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6') // this is the role "Key Vault Secrets User"
+    principalId: adminAppService.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+  dependsOn: [
+    keyVault
+    functionApp
+  ]
 }
 
 resource elfAppService 'Microsoft.Web/sites@2021-02-01' = {
