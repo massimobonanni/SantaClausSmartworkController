@@ -101,7 +101,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01'= {
   resource functionAppDefaultCodeSecret 'secrets' = {
     name: 'FunctionAppDefaultCode'
     properties: {
-      value: listKeys(functionApp.id,functionApp.apiVersion).keys[0].value
+      value: ''
     }
   }
 }
