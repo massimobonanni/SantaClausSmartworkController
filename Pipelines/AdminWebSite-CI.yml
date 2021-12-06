@@ -82,18 +82,42 @@ stages:
       inputs:
         command: 'build'
         projects: 'SCSC.AdminWeb/SCSC.AdminWeb.csproj'
-        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
-    
-    - task: ArchiveFiles@2
-      displayName: 'Create deploy zip'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish SCSC.AdminWeb project'
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
-        includeRootFolder: false
-        archiveType: zip
-        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        command: 'publish'
+        projects: 'SCSC.AdminWeb/SCSC.AdminWeb.csproj'
+        publishWebProjects: False
+        arguments: '--output $(Build.StagingDirectory)'
+        zipAfterPublish: True
 
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'adminWeb'
         publishLocation: 'Container'
+
+- stage: Deploy
+  dependsOn: Build
+  jobs:
+    - job: DeployAdminWebToAzure
+      displayName: 'Deploy Admin Web Site to Azure'
+      pool:
+        vmImage: $(vmImage)
+
+      steps:
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'adminWeb'
+          downloadPath: '$(System.ArtifactsDirectory)'
+
+      - task: AzureRmWebAppDeployment@4
+        inputs:
+          ConnectionType: 'AzureRM'
+          azureSubscription: 'Visual Studio Enterprise (2) Connection'
+          appType: 'webApp'
+          WebAppName: 'scscdemoadmin'
+          packageForLinux: '$(System.ArtifactsDirectory)/**/*.zip'
