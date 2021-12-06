@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SCSC.AdminWeb.Models.Alerts;
 using SCSC.APIClient;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,10 +13,12 @@ namespace SCSC.AdminWeb.Controllers
     public class AlertsController : Controller
     {
         private readonly AlertsRestClient alertsRestClient;
+        private readonly ElfsRestClient elfsRestClient;
 
-        public AlertsController(AlertsRestClient alertsRestClient)
+        public AlertsController(AlertsRestClient alertsRestClient, ElfsRestClient elfsRestClient)
         {
             this.alertsRestClient = alertsRestClient;
+            this.elfsRestClient = elfsRestClient;
         }
 
         public async Task<ActionResult> Index([FromQuery(Name = "elfId")] string elfId,
@@ -22,7 +26,7 @@ namespace SCSC.AdminWeb.Controllers
         {
             var model = new IndexViewModel() { FilterElfId = elfId };
 
-            var alerts = await this.alertsRestClient.GetAlertsAsync(elfId,token);
+            var alerts = await this.alertsRestClient.GetAlertsAsync(elfId, token);
 
             model.Alerts = alerts.Select(e => new AlertInfoViewModel(e));
 
@@ -30,7 +34,7 @@ namespace SCSC.AdminWeb.Controllers
         }
 
         // GET: AlertsController/Details/5
-        public async Task<ActionResult> Details(string id,CancellationToken token)
+        public async Task<ActionResult> Details(string id, CancellationToken token)
         {
             var alert = await this.alertsRestClient.GetAlertAsync(id, token);
             if (alert == null)
@@ -39,25 +43,47 @@ namespace SCSC.AdminWeb.Controllers
             return View(model);
         }
 
-        // GET: AlertsController/Create
-        public ActionResult Create()
+
+        public async Task<ActionResult> Create(string elfId, CancellationToken token)
         {
-            return View();
+            var model = new CreateViewModel();
+            var elfs = await this.elfsRestClient.GetElfsAsync(null, token);
+            model.ElfIds = new List<SelectListItem>();
+            model.ElfIds.Add(new SelectListItem("Select elf", null));
+            model.ElfIds.AddRange(elfs.Select(e => new SelectListItem(e.Name, e.Id)).OrderBy(i=>i.Text));
+            if (elfs.Any(e => e.Id == elfId))
+                model.ElfId = elfId;
+            return View(model);
         }
 
-        // POST: AlertsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(CreateViewModel alertModel, CancellationToken token)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                if (alertModel.IsValid())
+                {
+                    var alert = alertModel.ToCoreAlert();
+
+                    var result = await this.alertsRestClient.CreateAlertAsync(alert, token);
+
+                    if (result)
+                        return RedirectToAction(nameof(Index));
+
+                    ModelState.AddModelError(string.Empty, "An error occurs during insert operation");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Check alert configuration");
+                }
+
             }
-            catch
-            {
-                return View();
-            }
+            var elfs = await this.elfsRestClient.GetElfsAsync(null, token);
+            alertModel.ElfIds = new List<SelectListItem>();
+            alertModel.ElfIds.Add(new SelectListItem("Select elf", null));
+            alertModel.ElfIds.AddRange(elfs.Select(e => new SelectListItem(e.Name, e.Id)).OrderBy(i => i.Text));
+            return View(alertModel);
         }
 
         // GET: AlertsController/Edit/5

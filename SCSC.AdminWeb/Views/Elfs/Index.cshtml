@@ -21,8 +21,8 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>Last Update</th>
-            <th>Work Time</th>
+            <th>Last Update (UTC)</th>
+            <th>Work Time (UTC)</th>
             <th>Daily<br/>Packages</th>
             <th>Daily Prod.<br/>(packs/hour)</th>
             <th>Last Hour Prod.<br/>(packs/hour)</th>
@@ -34,7 +34,7 @@
         {
             <tr>
                 <td>@item.Name</td>
-                <td>@item.LastUpdate.ToLocalTime().ToString(@"dd/MM/yyyy HH:mm:ss")</td>
+                <td>@item.LastUpdate.ToUniversalTime().ToString(@"dd/MM/yyyy HH:mm:ss")</td>
                 <td>@item.StartWorkTime.ToString(@"hh\:mm") - @item.EndWorkTime.ToString(@"hh\:mm")</td>
                 <td>@item.PackagesToday</td>
                 <td>@item.DailyProductivity.ToString("##0.00")</td>

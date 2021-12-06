@@ -1,0 +1,108 @@
+﻿@model SCSC.AdminWeb.Models.Alerts.CreateViewModel
+
+@{
+    ViewData["Title"] = "Create new alert";
+}
+
+<h1>Create</h1>
+
+<h4>CreateAlertModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-10">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ElfId" class="control-label"></label><br/>
+                <select asp-for="ElfId" asp-items="Model.ElfIds"></select>
+                <span asp-validation-for="ElfId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AlertName" class="control-label"></label>
+                <input asp-for="AlertName" class="form-control" />
+                <span asp-validation-for="AlertName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Type" class="control-label"></label><br />
+                <select asp-for="Type" asp-items="Model.AlertTypes"></select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <br />
+            <ul class="nav nav-tabs" id="alertdetails" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="productivityalert-tab" href="#productivityalert"
+                       data-toggle="tab" role="tab" aria-controls="nav-productivityalert" aria-selected="true">Productivity Alert</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="inactivityAlert-tab" href="#inactivityalert"
+                       data-toggle="tab" role="tab" aria-controls="nav-inactivityalert" aria-selected="false">Inactivity Alert</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="productivityalert" role="tabpanel" aria-labelledby="nav-productivityalert-tab">
+                    <div class="form-group">
+                        <label asp-for="ProductivityAlertInfo.DurationInSec" class="control-label"></label>
+                        <input asp-for="ProductivityAlertInfo.DurationInSec" class="form-control" />
+                        <span asp-validation-for="ProductivityAlertInfo.DurationInSec" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ProductivityAlertInfo.PollingTimeInSec" class="control-label"></label>
+                        <input asp-for="ProductivityAlertInfo.PollingTimeInSec" class="form-control" />
+                        <span asp-validation-for="ProductivityAlertInfo.PollingTimeInSec" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ProductivityAlertInfo.ProductivityPerHourThreshold" class="control-label"></label>
+                        <input asp-for="ProductivityAlertInfo.ProductivityPerHourThreshold" class="form-control" />
+                        <span asp-validation-for="ProductivityAlertInfo.ProductivityPerHourThreshold" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ProductivityAlertInfo.EmailToNotify" class="control-label"></label>
+                        <input asp-for="ProductivityAlertInfo.EmailToNotify" class="form-control" />
+                        <span asp-validation-for="ProductivityAlertInfo.EmailToNotify" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ProductivityAlertInfo.SMSToNotify" class="control-label"></label>
+                        <input asp-for="ProductivityAlertInfo.SMSToNotify" class="form-control" />
+                        <span asp-validation-for="ProductivityAlertInfo.SMSToNotify" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="inactivityalert" role="tabpanel" aria-labelledby="nav-inactivityalert-tab">
+                    <div class="form-group">
+                        <label asp-for="InactivityAlertInfo.DurationInSec" class="control-label"></label>
+                        <input asp-for="InactivityAlertInfo.DurationInSec" class="form-control" />
+                        <span asp-validation-for="InactivityAlertInfo.DurationInSec" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="InactivityAlertInfo.PollingTimeInSec" class="control-label"></label>
+                        <input asp-for="InactivityAlertInfo.PollingTimeInSec" class="form-control" />
+                        <span asp-validation-for="InactivityAlertInfo.PollingTimeInSec" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="InactivityAlertInfo.MaxInactivityTimeInMinutes" class="control-label"></label>
+                        <input asp-for="InactivityAlertInfo.MaxInactivityTimeInMinutes" class="form-control" />
+                        <span asp-validation-for="InactivityAlertInfo.MaxInactivityTimeInMinutes" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="InactivityAlertInfo.EmailToNotify" class="control-label"></label>
+                        <input asp-for="InactivityAlertInfo.EmailToNotify" class="form-control" />
+                        <span asp-validation-for="InactivityAlertInfo.EmailToNotify" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="InactivityAlertInfo.SMSToNotify" class="control-label"></label>
+                        <input asp-for="InactivityAlertInfo.SMSToNotify" class="form-control" />
+                        <span asp-validation-for="InactivityAlertInfo.SMSToNotify" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

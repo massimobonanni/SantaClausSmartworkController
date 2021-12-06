@@ -14,13 +14,14 @@
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary ml-2 mb-2">Search</button>
+    <button type="submit" class="btn btn-primary ml-2 mb-2">Search</button>&nbsp;@Html.ActionLink("New Alert", "Create","Alerts", new { elfId = Model.FilterElfId })
 </form>
 <br />
 <table class="table">
     <thead>
         <tr>
             <th>Name</th>
+            <th>Elf Id</th>
             <th>Type</th>
             <th>Status</th>
             <th></th>
@@ -31,6 +32,7 @@
         {
             <tr>
                 <td>@item.AlertName</td>
+                <td>@item.ElfId</td>
                 <td>@item.Type</td>
                 <td>@item.Status</td>
                 <td>
@@ -40,5 +42,4 @@
         }
     </tbody>
 </table>
-<br />
-@Html.ActionLink("Alerts", "Create","Alerts", new { elfId = Model.FilterElfId })
+

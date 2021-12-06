@@ -27,17 +27,84 @@
             Status
         </dt>
         <dd class="col-sm-9">
-            @Model.Status)
-        </dd>
-        <dt class="col-sm-3">
-            <span class="align-top">Alert Payload</span>
-        </dt>
-        <dd class="col-sm-9">
-            <textarea id="dataTextArea" name="dataTextArea" class="align-top">
-                @Model.Data
-            </textarea>
+            @Model.Status
         </dd>
     </dl>
+
+    @if (Model.Type == SCSC.Core.Models.AlertType.Inactivity)
+    {
+        <dl class="row offset-1 col-sm-10 border">
+            <dt class="col-sm-8 offset-2">Inactivity Details</dt>
+            <dt class="col-sm-5">
+                Alert duration (in seconds)
+            </dt>
+            <dd class="col-sm-5">
+                @Model.InactivityAlertInfo.DurationInSec
+            </dd>
+            <dt class="col-sm-5">
+                Polling time (in seconds)
+            </dt>
+            <dd class="col-sm-5">
+                @Model.InactivityAlertInfo.PollingTimeInSec
+            </dd>
+            <dt class="col-sm-5">
+                Max inactivity time (in minutes)
+            </dt>
+            <dd class="col-sm-5">
+                @Model.InactivityAlertInfo.MaxInactivityTimeInMinutes
+            </dd>
+            <dt class="col-sm-5">
+                Email to notify
+            </dt>
+            <dd class="col-sm-5">
+                @Model.InactivityAlertInfo.EmailToNotify
+            </dd>
+            <dt class="col-sm-5">
+                SMS to notify
+            </dt>
+            <dd class="col-sm-5">
+                @Model.InactivityAlertInfo.SMSToNotify
+            </dd>
+        </dl>
+    }
+    @if (Model.Type == SCSC.Core.Models.AlertType.Productivity)
+    {
+        <dl class="row offset-1 col-sm-10 border">
+            <dt class="col-sm-8 offset-2">Productivity Details</dt>
+            <dt class="col-sm-5">
+                Alert duration (in seconds)
+            </dt>
+            <dd class="col-sm-5">
+                @Model.ProductivityAlertInfo.DurationInSec
+            </dd>
+            <dt class="col-sm-5">
+                Polling time (in seconds)
+            </dt>
+            <dd class="col-sm-5">
+                @Model.ProductivityAlertInfo.PollingTimeInSec
+            </dd>
+            <dt class="col-sm-5">
+                Productivity threshold (packs/hour)
+            </dt>
+            <dd class="col-sm-5">
+                @Model.ProductivityAlertInfo.ProductivityPerHourThreshold
+            </dd>
+            <dt class="col-sm-5">
+                Email to notify
+            </dt>
+            <dd class="col-sm-5">
+                @Model.ProductivityAlertInfo.EmailToNotify
+            </dd>
+            <dt class="col-sm-5">
+                SMS to notify
+            </dt>
+            <dd class="col-sm-5">
+                @Model.ProductivityAlertInfo.SMSToNotify
+            </dd>
+        </dl>
+    }
+
+
 </div>
 <div>
     @Html.ActionLink("Delete", "Delete", new { id = Model.Id }) |

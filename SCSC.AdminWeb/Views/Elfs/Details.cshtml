@@ -12,13 +12,13 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-3">
-            Last update
+            Last update (UTC)
         </dt>
         <dd class="col-sm-9">
-            @Model.LastUpdate.ToLocalTime().ToString(@"dd/MM/yyyy HH:mm:ss")
+            @Model.LastUpdate.ToUniversalTime().ToString(@"dd/MM/yyyy HH:mm:ss")
         </dd>
         <dt class="col-sm-3">
-            Job Time
+            Job Time (UTC)
         </dt>
         <dd class="col-sm-9">
             @Model.StartWorkTime.ToString(@"hh\:mm") - @Model.EndWorkTime.ToString(@"hh\:mm")

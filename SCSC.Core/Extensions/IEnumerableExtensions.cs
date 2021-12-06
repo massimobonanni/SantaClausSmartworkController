@@ -26,7 +26,7 @@ namespace System.Collections.Generic
             if (packages == null)
                 return 0;
 
-            var tNow = DateTimeOffset.Now; // Time to calculate the average
+            var tNow = DateTimeOffset.Now.ToUniversalTime(); // Time to calculate the average
 
             if (calculationTime.HasValue)
                 tNow = calculationTime.Value;
@@ -53,7 +53,7 @@ namespace System.Collections.Generic
                 throw new NullReferenceException(nameof(packages));
 
             var oldPackages = packages
-                .Where(p => p.StartTimestamp < DateTimeOffset.Now.Subtract(oldItemTimeThreshold))
+                .Where(p => p.StartTimestamp.ToUniversalTime() < DateTimeOffset.Now.ToUniversalTime().Subtract(oldItemTimeThreshold))
                 .Where(p => !p.IsOpen);
 
             return oldPackages;
