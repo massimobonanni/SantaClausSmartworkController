@@ -14,7 +14,7 @@ namespace SCSC.PlatformFunctions.Entities.Interfaces
         void Configure(ElfConfigurationModel config);
         void Delete();
 
-        Task<double> GetHourProductivity();
+        Task<double?> GetHourProductivity();
         Task<DateTimeOffset?> GetLastUpdate();
     }
 }

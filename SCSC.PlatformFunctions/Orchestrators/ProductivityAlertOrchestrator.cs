@@ -76,8 +76,8 @@ namespace SCSC.PlatformFunctions.Orchestrators
 
             while (!cancelEvent.IsCompleted && context.CurrentUtcDateTime <= startTime.AddSeconds(alertInfo.DurationInSec))
             {
-                var currentProductivity = await context.CallEntityAsync<double>(elfEntityId, nameof(IElfEntity.GetHourProductivity));
-                if (currentProductivity < alertInfo.ProductivityPerHourThreshold)
+                var currentProductivity = await context.CallEntityAsync<double?>(elfEntityId, nameof(IElfEntity.GetHourProductivity));
+                if (currentProductivity.HasValue && currentProductivity.Value < alertInfo.ProductivityPerHourThreshold)
                 {
                     logger.LogInformation($"Productivity threshold reached for elf {createAlertInfo.ElfId}", createAlertInfo);
                     if (!string.IsNullOrWhiteSpace(alertInfo.SMSToNotify))

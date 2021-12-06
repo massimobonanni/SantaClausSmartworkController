@@ -66,8 +66,8 @@ namespace SCSC.PlatformFunctions.Entities
 
                 if (innerPackage != null && innerPackage.IsOpen)
                 {
-                    innerPackage.EndTimestamp = package.Timestamp;
-                    this.LastUpdate = DateTimeOffset.Now;
+                    innerPackage.EndTimestamp = package.Timestamp.ToUniversalTime();
+                    this.LastUpdate = DateTimeOffset.UtcNow;
                 }
             }
 
@@ -83,32 +83,44 @@ namespace SCSC.PlatformFunctions.Entities
                 if (innerPackage == null)
                 {
                     innerPackage = new PackageInfoModel();
-                    innerPackage.StartTimestamp = package.Timestamp;
+                    innerPackage.StartTimestamp = package.Timestamp.ToUniversalTime();
                     innerPackage.GiftDescription = package.GiftDescription;
                     innerPackage.KidName = package.KidName;
                     innerPackage.PackageId = package.PackageId;
                     this.Packages.Add(innerPackage);
-                    this.LastUpdate = DateTimeOffset.Now.ToUniversalTime();
+                    this.LastUpdate = DateTimeOffset.UtcNow;
                 }
             }
 
             await CleanPackagesAsync();
         }
 
-        public Task<double> GetHourProductivity()
+        public Task<double?> GetHourProductivity()
         {
-            if (this.Packages == null)
-                return Task.FromResult(0.0);
+            double? hourProductivity = null;
 
-            var productivity = this.Packages.CalculateAverageSpeed(this.StartWorkTime,
-                this.EndWorkTime, null, TimeSpan.FromHours(1));
+            if (this.AreWeInWorkingHours())
+            {
+                if (this.Packages != null)
+                {
+                    hourProductivity = this.Packages.CalculateAverageSpeed(this.StartWorkTime,
+                    this.EndWorkTime, null, TimeSpan.FromHours(1));
+                }
+                else
+                    hourProductivity = 0.0;
+            }
 
-            return Task.FromResult(productivity);
+            return Task.FromResult(hourProductivity);
         }
 
         public Task<DateTimeOffset?> GetLastUpdate()
         {
-            return Task.FromResult(this.LastUpdate);
+            DateTimeOffset? result = null;
+
+            if (this.AreWeInWorkingHours())
+                result = this.LastUpdate;
+
+            return Task.FromResult(result);
         }
 
         public void Delete()
@@ -123,6 +135,14 @@ namespace SCSC.PlatformFunctions.Entities
         #endregion [ IElfEntity interface ]
 
         #region [ Internal Methods ]
+
+        private bool AreWeInWorkingHours()
+        {
+            var nowTime = DateTimeOffset.UtcNow.TimeOfDay;
+
+            return this.StartWorkTime <= nowTime && nowTime <= this.EndWorkTime;
+        }
+
         private Task CleanPackagesAsync()
         {
             var packagesToRemove = this.Packages.ExtractOldItems(TimeSpan.FromDays(1)).ToList();
