@@ -65,7 +65,8 @@ namespace SCSC.PlatformFunctions
             {
                 PageSize = 100,
                 ShowInput = true,
-                RuntimeStatus = new List<OrchestrationRuntimeStatus> { OrchestrationRuntimeStatus.Running }
+                RuntimeStatus = new List<OrchestrationRuntimeStatus> { OrchestrationRuntimeStatus.Running,
+                    OrchestrationRuntimeStatus.Completed }
             };
 
             do
@@ -80,7 +81,7 @@ namespace SCSC.PlatformFunctions
                     {
                         var alert = item.ToAlertInfoModel();
                         if (filters.AreFiltersVerified(alert))
-                            result.Add(item.ToAlertInfoModel());
+                            result.Add(alert);
                     }
                 }
 
@@ -151,7 +152,7 @@ namespace SCSC.PlatformFunctions
                 return new BadRequestObjectResult("Elf ID is not valid");
 
             var orchestratorName = await _orchestratorfactory.GetOrchestratorNameAsync(alertModel.Type, default);
-
+            alertModel.CreationTimeStamp = DateTimeOffset.UtcNow;
             var orchestratorId = await client.StartNewAsync<CreateAlertModel>(orchestratorName, alertModel);
 
             return new OkObjectResult(orchestratorId);

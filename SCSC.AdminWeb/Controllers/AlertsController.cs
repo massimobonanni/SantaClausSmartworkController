@@ -28,7 +28,9 @@ namespace SCSC.AdminWeb.Controllers
 
             var alerts = await this.alertsRestClient.GetAlertsAsync(elfId, token);
 
-            model.Alerts = alerts.Select(e => new AlertInfoViewModel(e));
+            model.Alerts = alerts
+                .Select(e => new AlertInfoViewModel(e))
+                .OrderByDescending(e=>e.CreationTimeStamp);
 
             return View(model);
         }

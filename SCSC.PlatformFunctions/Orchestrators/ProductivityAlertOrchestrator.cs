@@ -98,6 +98,10 @@ namespace SCSC.PlatformFunctions.Orchestrators
                         notification.Tos =new List<string>() { alertInfo.EmailToNotify};
                         await context.CallActivityAsync(nameof(AlertNotificationActivity.SendEmail), notification);
                     }
+
+                    await context.CallActivityAsync(nameof(AlertNotificationActivity.SaveAlertNotification),
+                            (context.InstanceId, createAlertInfo)); 
+
                     break;
                 }
                 await context.CreateTimer(context.CurrentUtcDateTime.AddSeconds(alertInfo.PollingTimeInSec), CancellationToken.None);

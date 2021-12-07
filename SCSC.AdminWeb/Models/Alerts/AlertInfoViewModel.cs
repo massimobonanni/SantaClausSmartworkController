@@ -20,6 +20,7 @@ namespace SCSC.AdminWeb.Models.Alerts
             ElfId = source.ElfId;
             Type = source.Type;
             Status = source.Status;
+            CreationTimeStamp = source.CreationTimeStamp;
             if (source.Data != null)
             {
                 if (source.Data is string)
@@ -46,6 +47,7 @@ namespace SCSC.AdminWeb.Models.Alerts
         public string Id { get; set; }
         public string AlertName { get; set; }
         public string ElfId { get; set; }
+        public DateTimeOffset? CreationTimeStamp { get; set; }
         public AlertType Type { get; set; }
         public AlertStatus Status { get; set; }
         public string Data { get; set; }

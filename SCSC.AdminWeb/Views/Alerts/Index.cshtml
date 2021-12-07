@@ -22,6 +22,7 @@
         <tr>
             <th>Name</th>
             <th>Elf Id</th>
+            <th>Creation Time (UTC)</th>
             <th>Type</th>
             <th>Status</th>
             <th></th>
@@ -33,6 +34,7 @@
             <tr>
                 <td>@item.AlertName</td>
                 <td>@item.ElfId</td>
+                <td>@item.CreationTimeStamp?.ToUniversalTime().ToString(@"dd/MM/yyyy HH:mm:ss")</td>
                 <td>@item.Type</td>
                 <td>@item.Status</td>
                 <td>

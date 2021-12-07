@@ -14,6 +14,9 @@ namespace SCSC.Core.Models
         [JsonProperty("alertName")]
         public string AlertName { get; set; }
 
+        [JsonProperty("creationTimeStamp")]
+        public DateTimeOffset? CreationTimeStamp { get; set; }
+
         [JsonProperty("type")]
         [JsonConverter(typeof(StringEnumConverter))]
         public AlertType Type { get; set; }

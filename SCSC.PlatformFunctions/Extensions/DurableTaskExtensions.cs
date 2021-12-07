@@ -38,7 +38,8 @@ namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
                 AlertName = inputModel.AlertName,
                 Data = inputModel.Data,
                 Type = inputModel.Type,
-                ElfId = inputModel.ElfId
+                ElfId = inputModel.ElfId,
+                CreationTimeStamp = inputModel.CreationTimeStamp
             };
         }
     }

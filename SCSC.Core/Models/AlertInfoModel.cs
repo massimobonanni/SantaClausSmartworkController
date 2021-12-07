@@ -15,9 +15,12 @@ namespace SCSC.Core.Models
 
         [JsonProperty("elfId")]
         public string ElfId { get; set; }
-        
+
         [JsonProperty("alertName")]
         public string AlertName { get; set; }
+
+        [JsonProperty("creationTimeStamp")]
+        public DateTimeOffset? CreationTimeStamp { get; set; }
 
         [JsonProperty("type")]
         [JsonConverter(typeof(StringEnumConverter))]
