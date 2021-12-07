@@ -3,6 +3,7 @@ using SCSC.Core.Test.DataGenerators;
 using SCSC.Core.Test.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Xunit;
 
@@ -44,5 +45,48 @@ namespace SCSC.Core.Test.Estensions
         }
         #endregion
 
+        #region [ Method GetPackagesInDay ]
+        [Fact]
+        public void GetPackagesInDay_ArgumentNull_null()
+        {
+            IEnumerable<PackageInfoModel> target = null;
+
+            var actual = target.GetPackagesInDay(DateTime.Now);
+
+            Assert.Null(actual);
+        }
+
+        [Theory()]
+        [MemberData(nameof(PackageInfoModelDataGenerator.GetPackagesForPackagesInDay),
+            MemberType = typeof(PackageInfoModelDataGenerator))]
+        public void GetPackagesInDay_Calcutate(
+            IEnumerable<PackageInfoModel> packages, DateTime date, int expectedCount)
+        {
+            var actualPackages = packages.GetPackagesInDay(date);
+            Assert.Equal(expectedCount, actualPackages.Count());
+        }
+        #endregion [ Method GetPackagesInDay ]
+
+        #region [ Method CountPackagesInDay ]
+        [Fact]
+        public void CountPackagesInDay_ArgumentNull_null()
+        {
+            IEnumerable<PackageInfoModel> target = null;
+
+            var actual = target.CountPackagesInDay(DateTime.Now);
+
+            Assert.Equal(0, actual);
+        }
+
+        [Theory()]
+        [MemberData(nameof(PackageInfoModelDataGenerator.GetPackagesForPackagesInDay),
+            MemberType = typeof(PackageInfoModelDataGenerator))]
+        public void CountPackagesInDay_Calcutate(
+            IEnumerable<PackageInfoModel> packages, DateTime date, int expectedCount)
+        {
+            var actualCount = packages.CountPackagesInDay(date);
+            Assert.Equal(expectedCount, actualCount);
+        }
+        #endregion [ Method CountPackagesInDay ]
     }
 }

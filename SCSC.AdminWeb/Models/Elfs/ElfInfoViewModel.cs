@@ -1,6 +1,7 @@
 ﻿using SCSC.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SCSC.AdminWeb.Models.Elfs
 {
@@ -18,7 +19,7 @@ namespace SCSC.AdminWeb.Models.Elfs
             this.LastUpdate = source.LastUpdate;
             this.StartWorkTime = source.StartWorkTime;
             this.EndWorkTime = source.EndWorkTime;
-            this.Packages = source.Packages;
+            this.Packages = source.Packages.GetPackagesInDay(DateTimeOffset.UtcNow.Date).ToList();
         }
 
         public string Id { get; set; }

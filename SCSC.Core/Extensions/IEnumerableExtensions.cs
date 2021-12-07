@@ -13,11 +13,19 @@ namespace System.Collections.Generic
             if (packages == null)
                 return 0;
 
-            var packagesInDay = packages
-               .Where(p => p.StartTimestamp.Date == date)
-               .Where(p => p.EndTimestamp.HasValue && p.EndTimestamp.Value.Date == date);
+            return packages.GetPackagesInDay(date).Count();
+        }
 
-            return packagesInDay.Count();
+        public static IEnumerable<PackageInfoModel> GetPackagesInDay(this IEnumerable<PackageInfoModel> packages,
+            DateTime date)
+        {
+            if (packages == null)
+                return null;
+
+            var packagesInDay = packages
+               .Where(p => p.StartTimestamp.Date == date.Date);
+
+            return packagesInDay;
         }
 
         public static double CalculateAverageSpeed(this IEnumerable<PackageInfoModel> packages, TimeSpan startworkTime,
@@ -47,14 +55,24 @@ namespace System.Collections.Generic
         }
 
         public static IEnumerable<PackageInfoModel> ExtractOldItems(this IEnumerable<PackageInfoModel> packages,
-            TimeSpan oldItemTimeThreshold)
+            DateTime? fromDate = null, int? maxSize = null)
         {
             if (packages == null)
                 throw new NullReferenceException(nameof(packages));
 
+            if (!fromDate.HasValue)
+            {
+                fromDate = DateTimeOffset.UtcNow.AddDays(-1).Date;
+            }
+
             var oldPackages = packages
-                .Where(p => p.StartTimestamp.ToUniversalTime() < DateTimeOffset.UtcNow.Subtract(oldItemTimeThreshold))
+                .Where(p => p.StartTimestamp.Date <= fromDate.Value)
                 .Where(p => !p.IsOpen);
+
+            if (maxSize.HasValue)
+                oldPackages = oldPackages
+                    .OrderBy(p => p.StartTimestamp)
+                    .Take(maxSize.Value);
 
             return oldPackages;
         }

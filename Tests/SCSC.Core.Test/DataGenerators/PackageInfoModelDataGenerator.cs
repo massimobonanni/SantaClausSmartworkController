@@ -172,5 +172,50 @@ namespace SCSC.Core.Test.DataGenerators
                 0.0
             };
         }
+
+        public static IEnumerable<object[]> GetPackagesForPackagesInDay()
+        {
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now)
+                    },
+                DateTimeOffset.Now.DateTime,
+                1
+            };
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddHours(-1)),
+                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeOffset.Now)
+                    },
+                DateTimeOffset.Now.DateTime,
+                2
+            };
+
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddDays(-1)),
+                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeOffset.Now)
+                    },
+                DateTimeOffset.Now.DateTime,
+                1
+            };
+
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeOffset.Now.AddDays(-1)),
+                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeOffset.Now.AddDays(-2))
+                    },
+                DateTimeOffset.Now.DateTime,
+                0
+            };
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace SCSC.AdminWeb.Models.Alerts
 {
     public class ProductivityAlertInfoModel
     {
-        [Display(Name = "Alert duretion (in secs)", Description = "The duration in secs of the alert")]
+        [Display(Name = "Alert duration (in secs)", Description = "The duration in secs of the alert")]
         public int DurationInSec { get; set; }
 
         [Display(Name = "SMS to notify the alert", Description = "The sms to use to notify message when the alert fires")]

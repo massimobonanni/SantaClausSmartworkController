@@ -145,7 +145,7 @@ namespace SCSC.PlatformFunctions.Entities
 
         private Task CleanPackagesAsync()
         {
-            var packagesToRemove = this.Packages.ExtractOldItems(TimeSpan.FromDays(1)).ToList();
+            var packagesToRemove = this.Packages.ExtractOldItems(null,50).ToList();
 
             if (packagesToRemove.Any())
             {

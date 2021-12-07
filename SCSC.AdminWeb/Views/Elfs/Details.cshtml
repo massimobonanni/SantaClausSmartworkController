@@ -36,7 +36,7 @@
             @Model.DailyProductivity.ToString("##0.00") &nbsp;packs/hour
         </dd>
         <dt class="col-sm-3">
-            Daily packages
+           Daily packages
         </dt>
         <dd class="col-sm-9">
             @Model.PackagesToday
@@ -59,8 +59,8 @@
                         <tr>
                             <th>Kid Name</th>
                             <th>Gift Description</th>
-                            <th>Packaging Start</th>
-                            <th>Packaging Stop</th>
+                            <th>Package Start</th>
+                            <th>Package Stop</th>
                             <th>Duration</th>
                         </tr>
                     </thead>
@@ -84,6 +84,6 @@
 <hr />
 <br />
 <div>
-    @Html.ActionLink("Alerts", "Index","Alerts", new { elfId = Model.Id }) |
+    @Html.ActionLink("Elf Alerts", "Index","Alerts", new { elfId = Model.Id }) |
     <a asp-action="Index">Back to List</a>
 </div>
