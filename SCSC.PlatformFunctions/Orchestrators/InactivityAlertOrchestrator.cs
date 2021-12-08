@@ -71,45 +71,61 @@ namespace SCSC.PlatformFunctions.Orchestrators
 
             var elfEntityId = await this._entityfactory.GetEntityIdAsync(createAlertInfo.ElfId, CancellationToken.None);
 
-            var startTime = context.CurrentUtcDateTime;
-            var cancelEvent = context.WaitForExternalEvent(AlertOrchestratorEvents.Cancel);
+            var numberOfIteration = alertInfo.DurationInSec / alertInfo.PollingTimeInSec;
+            var exitLoop = false;
 
-            while (!cancelEvent.IsCompleted && context.CurrentUtcDateTime <= startTime.AddSeconds(alertInfo.DurationInSec))
+            for (int i = 0; i < numberOfIteration && !exitLoop; i++)
             {
-                var lastUpdate = await context.CallEntityAsync<DateTimeOffset?>(elfEntityId, nameof(IElfEntity.GetLastUpdate));
-                if (lastUpdate.HasValue)
+                using (var timeoutCts = new CancellationTokenSource())
                 {
-                    var inactivityMinutes = DateTimeOffset.Now.Subtract(lastUpdate.Value).TotalMinutes;
-                    if (alertInfo.MaxInactivityTimeInMinutes < inactivityMinutes)
+                    var cancelEvent = context.WaitForExternalEvent(AlertOrchestratorEvents.Cancel);
+                    var timeoutFireAt = context.CurrentUtcDateTime.AddSeconds(alertInfo.PollingTimeInSec);
+                    var alertTimeout = context.CreateTimer(timeoutFireAt, timeoutCts.Token);
+
+                    Task completedTask = await Task.WhenAny(cancelEvent, alertTimeout);
+
+                    if (completedTask == alertTimeout)
                     {
-                        logger.LogInformation($"Productivity threshold reached for elf {createAlertInfo.ElfId}", createAlertInfo);
-                        if (!string.IsNullOrWhiteSpace(alertInfo.SMSToNotify))
+                        var lastUpdate = await context.CallEntityAsync<DateTimeOffset?>(elfEntityId, nameof(IElfEntity.GetLastUpdate));
+                        if (lastUpdate.HasValue)
                         {
-                            var notification = new AlertNotificationActivity.SmsInfoModel();
-                            notification.Message = $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes";
-                            notification.FromPhoneNumber = this._configuration.GetValue<string>("TwilioFromNumber");
-                            notification.ToPhoneNumber = alertInfo.SMSToNotify;
-                            await context.CallActivityAsync(nameof(AlertNotificationActivity.SendSMS), notification);
+                            var inactivityMinutes = DateTimeOffset.Now.Subtract(lastUpdate.Value).TotalMinutes;
+                            if (alertInfo.MaxInactivityTimeInMinutes < inactivityMinutes)
+                            {
+                                logger.LogInformation($"Productivity threshold reached for elf {createAlertInfo.ElfId}", createAlertInfo);
+                                if (!string.IsNullOrWhiteSpace(alertInfo.SMSToNotify))
+                                {
+                                    var notification = new AlertNotificationActivity.SmsInfoModel();
+                                    notification.Message = $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes";
+                                    notification.FromPhoneNumber = this._configuration.GetValue<string>("TwilioFromNumber");
+                                    notification.ToPhoneNumber = alertInfo.SMSToNotify;
+                                    await context.CallActivityAsync(nameof(AlertNotificationActivity.SendSMS), notification);
 
+                                }
+                                if (!string.IsNullOrWhiteSpace(alertInfo.EmailToNotify))
+                                {
+                                    var notification = new AlertNotificationActivity.EmailInfoModel();
+                                    notification.From = this._configuration.GetValue<string>("EmailNotificationFrom");
+                                    notification.Subject = $"Alert for elf {createAlertInfo.ElfId}";
+                                    notification.Body = $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes, more than {alertInfo.MaxInactivityTimeInMinutes} minutes";
+                                    notification.Tos = new List<string>() { alertInfo.EmailToNotify };
+                                    await context.CallActivityAsync(nameof(AlertNotificationActivity.SendEmail), notification);
+                                }
+
+                                await context.CallActivityAsync(nameof(AlertNotificationActivity.SaveAlertNotification),
+                                    (context.InstanceId, createAlertInfo));
+
+                                exitLoop = true;
+                            }
                         }
-                        if (!string.IsNullOrWhiteSpace(alertInfo.EmailToNotify))
-                        {
-                            var notification = new AlertNotificationActivity.EmailInfoModel();
-                            notification.From = this._configuration.GetValue<string>("EmailNotificationFrom");
-                            notification.Subject = $"Alert for elf {createAlertInfo.ElfId}";
-                            notification.Body = $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes, more than {alertInfo.MaxInactivityTimeInMinutes} minutes";
-                            notification.Tos = new List<string>() { alertInfo.EmailToNotify };
-                            await context.CallActivityAsync(nameof(AlertNotificationActivity.SendEmail), notification);
-                        }
-
-                        await context.CallActivityAsync(nameof(AlertNotificationActivity.SaveAlertNotification), 
-                            (context.InstanceId, createAlertInfo));
-
-                        break;
                     }
+                    else
+                    {
+                        exitLoop = true;
+                    }
+
+                    timeoutCts.Cancel();
                 }
-                // add logic here
-                await context.CreateTimer(context.CurrentUtcDateTime.AddSeconds(alertInfo.PollingTimeInSec), CancellationToken.None);
             }
         }
     }
