@@ -7,6 +7,14 @@ namespace SCSC.AdminWeb.Models.Elfs
 {
     public class ElfInfoViewModel
     {
+        public enum ElfStatus
+        {
+            Unknown,
+            Work,
+            Break,
+            OutOfOffice
+        }
+
         public ElfInfoViewModel()
         {
 
@@ -27,6 +35,27 @@ namespace SCSC.AdminWeb.Models.Elfs
         public DateTimeOffset LastUpdate { get; set; }
         public TimeSpan StartWorkTime { get; set; }
         public TimeSpan EndWorkTime { get; set; }
+        public ElfStatus Status
+        {
+            get
+            {
+                var dtNow = DateTimeOffset.UtcNow;
+                if (dtNow.TimeOfDay < StartWorkTime || dtNow.TimeOfDay > EndWorkTime)
+                    return ElfStatus.OutOfOffice;
+                if (LastUpdate.Date != dtNow.Date)
+                    return ElfStatus.Unknown;
+
+                if (Packages == null || !Packages.Any())
+                    return ElfStatus.Break;
+
+                var currentPackage = Packages.OrderByDescending(p => p.StartTimestamp).First();
+
+                if (currentPackage.IsOpen)
+                    return ElfStatus.Work;
+                else
+                    return ElfStatus.Break;
+            }
+        }
         public List<PackageInfoModel> Packages { get; set; }
 
         public double LastHourProductivity

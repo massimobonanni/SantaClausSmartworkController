@@ -5,12 +5,32 @@
     ViewData["Title"] = @Model.Name + " Details";
 }
 
-<h2 class="align-content-center text-secondary"><img src="~/images/Elf.png" height=50/>&nbsp; Elf Details</h2>
+<h2 class="align-content-center text-secondary"><img src="~/images/Elf.png" height=50 />&nbsp; Elf Details</h2>
 <br />
 <div>
     <h3>@Model.Name</h3>
     <hr />
     <dl class="row">
+        <dt class="col-sm-3">
+            Status
+        </dt>
+        <dd class="col-sm-9">
+            @switch (item.Status)
+            {
+                case ElfInfoViewModel.ElfStatus.OutOfOffice:
+                    <img src="~/images/ElfStatus-OutOfOffice.png" height=35 data-toggle="tooltip" title="Out of Office" />
+                    break;
+                case ElfInfoViewModel.ElfStatus.Break:
+                    <img src="~/images/ElfStatus-Break.png" height=35 data-toggle="tooltip" title="In Break" />
+                    break;
+                case ElfInfoViewModel.ElfStatus.Work:
+                    <img src="~/images/ElfStatus-Work.png" height=35 data-toggle="tooltip" title="Working" />
+                    break;
+                default:
+                    <img src="~/images/ElfStatus-Unknow.png" height=35 data-toggle="tooltip" title="Unknown" />
+                    break;
+            }
+        </dd>
         <dt class="col-sm-3">
             Last update (UTC)
         </dt>
@@ -36,7 +56,7 @@
             @Model.DailyProductivity.ToString("##0.00") &nbsp;packs/hour
         </dd>
         <dt class="col-sm-3">
-           Daily packages
+            Daily packages
         </dt>
         <dd class="col-sm-9">
             @Model.PackagesToday
@@ -48,7 +68,7 @@
         <div class="card-header" id="headingOne">
             <h2 class="mb-2">
                 <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                    <img src="~/images/Package.png" height=25/>&nbsp; Package list
+                    <img src="~/images/Package.png" height=25 />&nbsp; Package list
                 </button>
             </h2>
         </div>
@@ -87,3 +107,8 @@
     @Html.ActionLink("Elf Alerts", "Index","Alerts", new { elfId = Model.Id }) |
     <a asp-action="Index">Back to List</a>
 </div>
+<script>
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+</script>
