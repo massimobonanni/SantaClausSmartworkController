@@ -67,7 +67,7 @@ namespace SCSC.PlatformFunctions
                 ShowInput = true,
                 InstanceIdPrefix = GlobalConstants.AlertPrefixInstanceId,
                 RuntimeStatus = new List<OrchestrationRuntimeStatus> { OrchestrationRuntimeStatus.Running,
-                    OrchestrationRuntimeStatus.Completed }
+                    OrchestrationRuntimeStatus.Completed, OrchestrationRuntimeStatus.Terminated }
             };
 
             do
@@ -175,13 +175,23 @@ namespace SCSC.PlatformFunctions
         #endregion Open API Definition
         [FunctionName(nameof(CancelAlert))]
         public async Task<IActionResult> CancelAlert(
-            [HttpTrigger(AuthorizationLevel.Function, "put", Route = "alerts/{alertId}/cancel")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "alerts/{alertId}")] HttpRequest req,
             string alertId,
             [DurableClient] IDurableOrchestrationClient client,
             ILogger logger)
         {
-            await client.RaiseEventAsync(alertId, AlertOrchestratorEvents.Cancel);
-
+            try
+            {
+                await client.TerminateAsync(alertId, $"Requested {AlertOrchestratorEvents.Cancel} event");
+            }
+            catch (ArgumentException)
+            {
+                return new NotFoundObjectResult(alertId);
+            }
+            catch (InvalidOperationException)
+            {
+                return new BadRequestObjectResult(alertId);
+            }
             return new OkObjectResult(alertId);
         }
     }
