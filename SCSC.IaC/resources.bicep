@@ -173,6 +173,14 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
           name: 'TwilioFromNumber'
           value: '+13253350391'
         }
+        {
+          name: 'PurgeHistoryTimer'
+          value: '0 0 * * * *'
+        }
+        {
+          name: 'PurgeRetentionInDays'
+          value: '7'
+        }
       ]
     }
   }
