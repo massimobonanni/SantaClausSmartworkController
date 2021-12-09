@@ -15,7 +15,7 @@
             Status
         </dt>
         <dd class="col-sm-9">
-            @switch (item.Status)
+            @switch (Model.Status)
             {
                 case ElfInfoViewModel.ElfStatus.OutOfOffice:
                     <img src="~/images/ElfStatus-OutOfOffice.png" height=35 data-toggle="tooltip" title="Out of Office" />
@@ -79,8 +79,8 @@
                         <tr>
                             <th>Kid Name</th>
                             <th>Gift Description</th>
-                            <th>Package Start</th>
-                            <th>Package Stop</th>
+                            <th>Package Start (UTC)</th>
+                            <th>Package Stop (UTC)</th>
                             <th>Duration</th>
                         </tr>
                     </thead>
@@ -90,8 +90,8 @@
                             <tr>
                                 <td>@item.KidName</td>
                                 <td>@item.GiftDescription</td>
-                                <td>@item.StartTimestamp.ToLocalTime().ToString("HH:mm:ss")</td>
-                                <td>@item.EndTimestamp?.ToLocalTime().ToString("HH:mm:ss")</td>
+                                <td>@item.StartTimestamp.ToUniversalTime().ToString("HH:mm:ss")</td>
+                                <td>@item.EndTimestamp?.ToUniversalTime().ToString("HH:mm:ss")</td>
                                 <td>@item.DurationInSec?.ToString("##0")</td>
                             </tr>
                         }
@@ -108,7 +108,7 @@
     <a asp-action="Index">Back to List</a>
 </div>
 <script>
-$(document).ready(function(){
-  $('[data-toggle="tooltip"]').tooltip();   
-});
+    $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip();
+    });
 </script>
