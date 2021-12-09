@@ -84,26 +84,17 @@ namespace SCSC.PlatformFunctions.Orchestrators
                     var inactivityMinutes = DateTimeOffset.Now.Subtract(lastUpdate.Value).TotalMinutes;
                     if (alertInfo.MaxInactivityTimeInMinutes < inactivityMinutes)
                     {
-
                         logger.LogInformation($"Productivity threshold reached for elf {createAlertInfo.ElfId}", createAlertInfo);
 
                         if (!string.IsNullOrWhiteSpace(alertInfo.SMSToNotify))
                         {
-                            var notification = new AlertNotificationActivity.SmsInfoModel();
-                            notification.Message = $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes";
-                            notification.FromPhoneNumber = this._configuration.GetValue<string>("TwilioFromNumber");
-                            notification.ToPhoneNumber = alertInfo.SMSToNotify;
-                            await context.CallActivityAsync(nameof(AlertNotificationActivity.SendSMS), notification);
-
+                            await context.SendAlertSMSAsync(this._configuration.GetValue<string>("TwilioFromNumber"),
+                                alertInfo.SMSToNotify, $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes");
                         }
                         if (!string.IsNullOrWhiteSpace(alertInfo.EmailToNotify))
                         {
-                            var notification = new AlertNotificationActivity.EmailInfoModel();
-                            notification.From = this._configuration.GetValue<string>("EmailNotificationFrom");
-                            notification.Subject = $"Alert for elf {createAlertInfo.ElfId}";
-                            notification.Body = $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes, more than {alertInfo.MaxInactivityTimeInMinutes} minutes";
-                            notification.Tos = new List<string>() { alertInfo.EmailToNotify };
-                            await context.CallActivityAsync(nameof(AlertNotificationActivity.SendEmail), notification);
+                            await context.SendAlertEmailAsync(this._configuration.GetValue<string>("EmailNotificationFrom"),
+                                alertInfo.EmailToNotify, $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes, more than {alertInfo.MaxInactivityTimeInMinutes} minutes");
                         }
 
                         await context.CallActivityAsync(nameof(AlertNotificationActivity.SaveAlertNotification),

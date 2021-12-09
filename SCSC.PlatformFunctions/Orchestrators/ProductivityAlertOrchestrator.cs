@@ -84,21 +84,14 @@ namespace SCSC.PlatformFunctions.Orchestrators
                     logger.LogInformation($"Productivity threshold reached for elf {createAlertInfo.ElfId}", createAlertInfo);
                     if (!string.IsNullOrWhiteSpace(alertInfo.SMSToNotify))
                     {
-                        var notification = new AlertNotificationActivity.SmsInfoModel();
-                        notification.Message = $"The elf {createAlertInfo.ElfId} went down {alertInfo.ProductivityPerHourThreshold} package/hour";
-                        notification.FromPhoneNumber = this._configuration.GetValue<string>("TwilioFromNumber");
-                        notification.ToPhoneNumber = alertInfo.SMSToNotify;
-                        await context.CallActivityAsync(nameof(AlertNotificationActivity.SendSMS), notification);
-
+                        await context.SendAlertSMSAsync(this._configuration.GetValue<string>("TwilioFromNumber"),
+                                alertInfo.SMSToNotify, $"The elf {createAlertInfo.ElfId} went down {alertInfo.ProductivityPerHourThreshold} packages/hour");
                     }
                     if (!string.IsNullOrWhiteSpace(alertInfo.EmailToNotify))
                     {
-                        var notification = new AlertNotificationActivity.EmailInfoModel();
-                        notification.From = this._configuration.GetValue<string>("EmailNotificationFrom");
-                        notification.Subject = $"Alert for elf {createAlertInfo.ElfId}";
-                        notification.Body = $"The elf {createAlertInfo.ElfId} had a productivity {currentProductivity} package/hour, less than {alertInfo.ProductivityPerHourThreshold} package/hour";
-                        notification.Tos = new List<string>() { alertInfo.EmailToNotify };
-                        await context.CallActivityAsync(nameof(AlertNotificationActivity.SendEmail), notification);
+                        await context.SendAlertEmailAsync(this._configuration.GetValue<string>("EmailNotificationFrom"),
+                               alertInfo.EmailToNotify,
+                               $"The elf {createAlertInfo.ElfId} had a productivity {currentProductivity} packages/hour, less than {alertInfo.ProductivityPerHourThreshold} packages/hour");
                     }
 
                     await context.CallActivityAsync(nameof(AlertNotificationActivity.SaveAlertNotification),
