@@ -73,7 +73,7 @@ namespace SCSC.PlatformFunctions.Orchestrators
             [Table("packagesArchive", Connection = "PackagesStorageAccount")] IAsyncCollector<ArchivePackage> outputTable,
             ILogger logger)
         {
-            logger.LogInformation($"[START ACTIVITY] --> {nameof(PackageArchiverOrchestrator.SavePackageToStorage)} for ${packagesInfo.ElfId} elf");
+            logger.LogInformation($"[START ACTIVITY] --> {nameof(PackageArchiverOrchestrator.SavePackageToStorage)} for {packagesInfo.ElfId} elf");
 
             if (packagesInfo.Packages != null && packagesInfo.Packages.Any())
             {
