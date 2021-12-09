@@ -25,8 +25,6 @@ namespace SCSC.PlatformFunctions
 {
     internal class AlertAPI
     {
-        private const string AlertPrefixInstanceId = "Alert_";
-
         private readonly IAlertOrchestratorFactory _orchestratorfactory;
 
         public AlertAPI(IAlertOrchestratorFactory orchestratorfactory)
@@ -67,7 +65,7 @@ namespace SCSC.PlatformFunctions
             {
                 PageSize = 100,
                 ShowInput = true,
-                InstanceIdPrefix = AlertPrefixInstanceId,
+                InstanceIdPrefix = GlobalConstants.AlertPrefixInstanceId,
                 RuntimeStatus = new List<OrchestrationRuntimeStatus> { OrchestrationRuntimeStatus.Running,
                     OrchestrationRuntimeStatus.Completed }
             };
@@ -156,7 +154,7 @@ namespace SCSC.PlatformFunctions
 
             var orchestratorName = await _orchestratorfactory.GetOrchestratorNameAsync(alertModel.Type, default);
             alertModel.CreationTimeStamp = DateTimeOffset.UtcNow;
-            var instanceId = $"{AlertPrefixInstanceId}{Guid.NewGuid()}";
+            var instanceId = $"{GlobalConstants.AlertPrefixInstanceId}{Guid.NewGuid()}";
             var orchestratorId = await client.StartNewAsync<CreateAlertModel>(orchestratorName, instanceId, alertModel);
 
             return new OkObjectResult(orchestratorId);
