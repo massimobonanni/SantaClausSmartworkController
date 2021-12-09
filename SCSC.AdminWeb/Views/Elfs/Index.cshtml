@@ -22,10 +22,11 @@
         <tr>
             <th>Name</th>
             <th>Last Update (UTC)</th>
+            <th>Status</th>
             <th>Work Time (UTC)</th>
-            <th>Daily<br/>Packages</th>
-            <th>Daily Prod.<br/>(packs/hour)</th>
-            <th>Last Hour Prod.<br/>(packs/hour)</th>
+            <th>Daily<br />Packages</th>
+            <th>Daily Prod.<br />(packs/hour)</th>
+            <th>Last Hour Prod.<br />(packs/hour)</th>
             <th></th>
         </tr>
     </thead>
@@ -35,6 +36,23 @@
             <tr>
                 <td>@item.Name</td>
                 <td>@item.LastUpdate.ToUniversalTime().ToString(@"dd/MM/yyyy HH:mm:ss")</td>
+                <td>
+                    @switch (item.Status)
+                    {
+                        case ElfInfoViewModel.ElfStatus.OutOfOffice:
+                            <img src="~/images/ElfStatus-OutOfOffice.png" height=25 data-toggle="tooltip" title="Out of Office"/>
+                            break;
+                        case ElfInfoViewModel.ElfStatus.Break:
+                            <img src="~/images/ElfStatus-Break.png" height=25 data-toggle="tooltip" title="In Break"/>
+                            break;
+                        case ElfInfoViewModel.ElfStatus.Work:
+                            <img src="~/images/ElfStatus-Work.png" height=25 data-toggle="tooltip" title="Working"/>
+                            break;
+                        default:
+                            <img src="~/images/ElfStatus-Unknow.png" height=25 data-toggle="tooltip" title="Unknown"/>
+                            break;
+                    }
+                </td>
                 <td>@item.StartWorkTime.ToString(@"hh\:mm") - @item.EndWorkTime.ToString(@"hh\:mm")</td>
                 <td>@item.PackagesToday</td>
                 <td>@item.DailyProductivity.ToString("##0.00")</td>
@@ -47,3 +65,8 @@
         }
     </tbody>
 </table>
+<script>
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+</script>
