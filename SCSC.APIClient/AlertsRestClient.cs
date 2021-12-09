@@ -74,9 +74,9 @@ namespace SCSC.APIClient
             if (string.IsNullOrWhiteSpace(alertId))
                 throw new ArgumentException(nameof(alertId));
 
-            var uri = this.CreateAPIUri(null, $"api/alerts/{alertId}/cancel");
+            var uri = this.CreateAPIUri(null, $"api/alerts/{alertId}");
 
-            var response = await this._httpClient.PutAsync(uri, null, cancellationToken);
+            var response = await this._httpClient.DeleteAsync(uri, cancellationToken);
 
             return response.IsSuccessStatusCode;
         }

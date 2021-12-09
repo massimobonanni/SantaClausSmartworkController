@@ -107,6 +107,39 @@
 
 </div>
 <div>
-    @Html.ActionLink("Cancel Alert", "Delete", new { id = Model.Id }) |
-    <a asp-action="Index">Back to List</a>
+    @if (Model.Status == SCSC.Core.Models.AlertStatus.Running)
+    {
+        <a href="#" data-toggle="modal" data-target="#deleteConfirm">Cancel Alert</a>
+    }
+    else
+    {
+        <span>Cancel Alert</span>
+    }
+     | <a asp-action="Index">Back to List</a>
+</div>
+
+<div class="modal fade" id="deleteConfirm">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Delete @Model.AlertName</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                Do you really want to delete the alert @Model.AlertName?
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                &nbsp;
+                @Html.ActionLink("Yes", "Delete", new { id = Model.Id }, new { @class="btn btn-primary", role="button" })
+            </div>
+
+        </div>
+    </div>
 </div>

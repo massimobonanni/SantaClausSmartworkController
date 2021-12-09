@@ -30,7 +30,7 @@ namespace SCSC.AdminWeb.Controllers
 
             model.Alerts = alerts
                 .Select(e => new AlertInfoViewModel(e))
-                .OrderByDescending(e=>e.CreationTimeStamp);
+                .OrderByDescending(e => e.CreationTimeStamp);
 
             return View(model);
         }
@@ -51,8 +51,8 @@ namespace SCSC.AdminWeb.Controllers
             var model = new CreateViewModel();
             var elfs = await this.elfsRestClient.GetElfsAsync(null, token);
             model.ElfIds = new List<SelectListItem>();
-            model.ElfIds.Add(new SelectListItem("Select elf", null));
-            model.ElfIds.AddRange(elfs.Select(e => new SelectListItem(e.Name, e.Id)).OrderBy(i=>i.Text));
+            model.ElfIds.Add(new SelectListItem("Select elf", string.Empty));
+            model.ElfIds.AddRange(elfs.Select(e => new SelectListItem(e.Name, e.Id)).OrderBy(i => i.Text));
             if (elfs.Any(e => e.Id == elfId))
                 model.ElfId = elfId;
             return View(model);
@@ -81,53 +81,22 @@ namespace SCSC.AdminWeb.Controllers
                 }
 
             }
+
             var elfs = await this.elfsRestClient.GetElfsAsync(null, token);
+
             alertModel.ElfIds = new List<SelectListItem>();
-            alertModel.ElfIds.Add(new SelectListItem("Select elf", null));
+            alertModel.ElfIds.Add(new SelectListItem("Select elf", string.Empty));
             alertModel.ElfIds.AddRange(elfs.Select(e => new SelectListItem(e.Name, e.Id)).OrderBy(i => i.Text));
             return View(alertModel);
         }
 
-        // GET: AlertsController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
 
-        // POST: AlertsController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(string id, CancellationToken token)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: AlertsController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: AlertsController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var result = await this.alertsRestClient.CancelAlertAsync(id, token);
+            if (!result)
+                return RedirectToAction("Details", new { id = id });
+            return RedirectToAction(nameof(Index));
         }
     }
 }
