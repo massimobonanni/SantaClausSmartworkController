@@ -72,58 +72,42 @@ namespace SCSC.PlatformFunctions.Orchestrators
             var elfEntityId = await this._entityfactory.GetEntityIdAsync(createAlertInfo.ElfId, CancellationToken.None);
 
             var numberOfIteration = alertInfo.DurationInSec / alertInfo.PollingTimeInSec;
-            var exitLoop = false;
 
-            for (int i = 0; i < numberOfIteration && !exitLoop; i++)
+            for (int i = 0; i < numberOfIteration; i++)
             {
-                using (var timeoutCts = new CancellationTokenSource())
+                var timeoutFireAt = context.CurrentUtcDateTime.AddSeconds(alertInfo.PollingTimeInSec);
+                await context.CreateTimer(timeoutFireAt, CancellationToken.None);
+
+                var currentProductivity = await context.CallEntityAsync<double?>(elfEntityId, nameof(IElfEntity.GetHourProductivity));
+                if (currentProductivity.HasValue && currentProductivity.Value < alertInfo.ProductivityPerHourThreshold)
                 {
-                    var cancelEvent = context.WaitForExternalEvent(AlertOrchestratorEvents.Cancel);
-                    var timeoutFireAt = context.CurrentUtcDateTime.AddSeconds(alertInfo.PollingTimeInSec);
-                    var alertTimeout = context.CreateTimer(timeoutFireAt, timeoutCts.Token);
-
-                    Task completedTask = await Task.WhenAny(cancelEvent, alertTimeout);
-
-                    if (completedTask == alertTimeout)
+                    logger.LogInformation($"Productivity threshold reached for elf {createAlertInfo.ElfId}", createAlertInfo);
+                    if (!string.IsNullOrWhiteSpace(alertInfo.SMSToNotify))
                     {
-                        var currentProductivity = await context.CallEntityAsync<double?>(elfEntityId, nameof(IElfEntity.GetHourProductivity));
-                        if (currentProductivity.HasValue && currentProductivity.Value < alertInfo.ProductivityPerHourThreshold)
-                        {
-                            logger.LogInformation($"Productivity threshold reached for elf {createAlertInfo.ElfId}", createAlertInfo);
-                            if (!string.IsNullOrWhiteSpace(alertInfo.SMSToNotify))
-                            {
-                                var notification = new AlertNotificationActivity.SmsInfoModel();
-                                notification.Message = $"The elf {createAlertInfo.ElfId} went down {alertInfo.ProductivityPerHourThreshold} package/hour";
-                                notification.FromPhoneNumber = this._configuration.GetValue<string>("TwilioFromNumber");
-                                notification.ToPhoneNumber = alertInfo.SMSToNotify;
-                                await context.CallActivityAsync(nameof(AlertNotificationActivity.SendSMS), notification);
+                        var notification = new AlertNotificationActivity.SmsInfoModel();
+                        notification.Message = $"The elf {createAlertInfo.ElfId} went down {alertInfo.ProductivityPerHourThreshold} package/hour";
+                        notification.FromPhoneNumber = this._configuration.GetValue<string>("TwilioFromNumber");
+                        notification.ToPhoneNumber = alertInfo.SMSToNotify;
+                        await context.CallActivityAsync(nameof(AlertNotificationActivity.SendSMS), notification);
 
-                            }
-                            if (!string.IsNullOrWhiteSpace(alertInfo.EmailToNotify))
-                            {
-                                var notification = new AlertNotificationActivity.EmailInfoModel();
-                                notification.From = this._configuration.GetValue<string>("EmailNotificationFrom");
-                                notification.Subject = $"Alert for elf {createAlertInfo.ElfId}";
-                                notification.Body = $"The elf {createAlertInfo.ElfId} had a productivity {currentProductivity} package/hour, less than {alertInfo.ProductivityPerHourThreshold} package/hour";
-                                notification.Tos = new List<string>() { alertInfo.EmailToNotify };
-                                await context.CallActivityAsync(nameof(AlertNotificationActivity.SendEmail), notification);
-                            }
-
-                            await context.CallActivityAsync(nameof(AlertNotificationActivity.SaveAlertNotification),
-                                    (context.InstanceId, createAlertInfo));
-
-                            exitLoop = true;
-                        }
+                    }
+                    if (!string.IsNullOrWhiteSpace(alertInfo.EmailToNotify))
+                    {
+                        var notification = new AlertNotificationActivity.EmailInfoModel();
+                        notification.From = this._configuration.GetValue<string>("EmailNotificationFrom");
+                        notification.Subject = $"Alert for elf {createAlertInfo.ElfId}";
+                        notification.Body = $"The elf {createAlertInfo.ElfId} had a productivity {currentProductivity} package/hour, less than {alertInfo.ProductivityPerHourThreshold} package/hour";
+                        notification.Tos = new List<string>() { alertInfo.EmailToNotify };
+                        await context.CallActivityAsync(nameof(AlertNotificationActivity.SendEmail), notification);
                     }
 
-                    else
-                    {
-                        exitLoop = true;
-                    }
+                    await context.CallActivityAsync(nameof(AlertNotificationActivity.SaveAlertNotification),
+                            (context.InstanceId, createAlertInfo));
 
-                    timeoutCts.Cancel();
+                    break;
                 }
             }
+
         }
     }
 }

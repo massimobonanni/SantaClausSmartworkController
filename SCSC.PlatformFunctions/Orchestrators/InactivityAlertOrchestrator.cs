@@ -72,61 +72,48 @@ namespace SCSC.PlatformFunctions.Orchestrators
             var elfEntityId = await this._entityfactory.GetEntityIdAsync(createAlertInfo.ElfId, CancellationToken.None);
 
             var numberOfIteration = alertInfo.DurationInSec / alertInfo.PollingTimeInSec;
-            var exitLoop = false;
 
-            for (int i = 0; i < numberOfIteration && !exitLoop; i++)
+            for (int i = 0; i < numberOfIteration; i++)
             {
-                using (var timeoutCts = new CancellationTokenSource())
+                var timeoutFireAt = context.CurrentUtcDateTime.AddSeconds(alertInfo.PollingTimeInSec);
+                await context.CreateTimer(timeoutFireAt, CancellationToken.None);
+
+                var lastUpdate = await context.CallEntityAsync<DateTimeOffset?>(elfEntityId, nameof(IElfEntity.GetLastUpdate));
+                if (lastUpdate.HasValue)
                 {
-                    var cancelEvent = context.WaitForExternalEvent(AlertOrchestratorEvents.Cancel);
-                    var timeoutFireAt = context.CurrentUtcDateTime.AddSeconds(alertInfo.PollingTimeInSec);
-                    var alertTimeout = context.CreateTimer(timeoutFireAt, timeoutCts.Token);
-
-                    Task completedTask = await Task.WhenAny(cancelEvent, alertTimeout);
-
-                    if (completedTask == alertTimeout)
+                    var inactivityMinutes = DateTimeOffset.Now.Subtract(lastUpdate.Value).TotalMinutes;
+                    if (alertInfo.MaxInactivityTimeInMinutes < inactivityMinutes)
                     {
-                        var lastUpdate = await context.CallEntityAsync<DateTimeOffset?>(elfEntityId, nameof(IElfEntity.GetLastUpdate));
-                        if (lastUpdate.HasValue)
+
+                        logger.LogInformation($"Productivity threshold reached for elf {createAlertInfo.ElfId}", createAlertInfo);
+
+                        if (!string.IsNullOrWhiteSpace(alertInfo.SMSToNotify))
                         {
-                            var inactivityMinutes = DateTimeOffset.Now.Subtract(lastUpdate.Value).TotalMinutes;
-                            if (alertInfo.MaxInactivityTimeInMinutes < inactivityMinutes)
-                            {
-                                logger.LogInformation($"Productivity threshold reached for elf {createAlertInfo.ElfId}", createAlertInfo);
-                                if (!string.IsNullOrWhiteSpace(alertInfo.SMSToNotify))
-                                {
-                                    var notification = new AlertNotificationActivity.SmsInfoModel();
-                                    notification.Message = $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes";
-                                    notification.FromPhoneNumber = this._configuration.GetValue<string>("TwilioFromNumber");
-                                    notification.ToPhoneNumber = alertInfo.SMSToNotify;
-                                    await context.CallActivityAsync(nameof(AlertNotificationActivity.SendSMS), notification);
+                            var notification = new AlertNotificationActivity.SmsInfoModel();
+                            notification.Message = $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes";
+                            notification.FromPhoneNumber = this._configuration.GetValue<string>("TwilioFromNumber");
+                            notification.ToPhoneNumber = alertInfo.SMSToNotify;
+                            await context.CallActivityAsync(nameof(AlertNotificationActivity.SendSMS), notification);
 
-                                }
-                                if (!string.IsNullOrWhiteSpace(alertInfo.EmailToNotify))
-                                {
-                                    var notification = new AlertNotificationActivity.EmailInfoModel();
-                                    notification.From = this._configuration.GetValue<string>("EmailNotificationFrom");
-                                    notification.Subject = $"Alert for elf {createAlertInfo.ElfId}";
-                                    notification.Body = $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes, more than {alertInfo.MaxInactivityTimeInMinutes} minutes";
-                                    notification.Tos = new List<string>() { alertInfo.EmailToNotify };
-                                    await context.CallActivityAsync(nameof(AlertNotificationActivity.SendEmail), notification);
-                                }
-
-                                await context.CallActivityAsync(nameof(AlertNotificationActivity.SaveAlertNotification),
-                                    (context.InstanceId, createAlertInfo));
-
-                                exitLoop = true;
-                            }
                         }
-                    }
-                    else
-                    {
-                        exitLoop = true;
-                    }
+                        if (!string.IsNullOrWhiteSpace(alertInfo.EmailToNotify))
+                        {
+                            var notification = new AlertNotificationActivity.EmailInfoModel();
+                            notification.From = this._configuration.GetValue<string>("EmailNotificationFrom");
+                            notification.Subject = $"Alert for elf {createAlertInfo.ElfId}";
+                            notification.Body = $"The elf {createAlertInfo.ElfId} is inactive since {Math.Round(inactivityMinutes)} minutes, more than {alertInfo.MaxInactivityTimeInMinutes} minutes";
+                            notification.Tos = new List<string>() { alertInfo.EmailToNotify };
+                            await context.CallActivityAsync(nameof(AlertNotificationActivity.SendEmail), notification);
+                        }
 
-                    timeoutCts.Cancel();
+                        await context.CallActivityAsync(nameof(AlertNotificationActivity.SaveAlertNotification),
+                            (context.InstanceId, createAlertInfo));
+
+                        break;
+                    }
                 }
             }
         }
+
     }
 }
