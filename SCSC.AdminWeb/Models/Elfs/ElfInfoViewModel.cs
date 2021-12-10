@@ -60,12 +60,11 @@ namespace SCSC.AdminWeb.Models.Elfs
 
         public double LastHourProductivity
         {
-            get => this.Packages.CalculateAverageSpeed(this.StartWorkTime, this.EndWorkTime);
+            get => this.Packages.CalculateHourlyProductivity(this.StartWorkTime, this.EndWorkTime);
         }
         public double DailyProductivity
         {
-            get => this.Packages.CalculateAverageSpeed(this.StartWorkTime, this.EndWorkTime,
-                null, this.EndWorkTime.Subtract(this.StartWorkTime));
+            get => this.Packages.CalculateDailyProductivity(this.StartWorkTime, this.EndWorkTime);
         }
 
         public int PackagesToday

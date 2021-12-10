@@ -11,37 +11,51 @@ namespace SCSC.Core.Test.Estensions
 {
     public class IEnumerableExtensionsTest
     {
-        #region [ Method CalculateAverageSpeed]
+        #region [ Method CalculateHourlyProductivity]
         [Fact]
-        public void CalculateAverageSpeed_ArgumentNull_ReturnZero()
+        public void CalculateHourlyProductivity_ArgumentNull_ReturnZero()
         {
             IEnumerable<PackageInfoModel> target = null;
 
-            var actual = target.CalculateAverageSpeed(new TimeSpan(9, 0, 0), new TimeSpan(18, 0, 0));
+            var actualProductivity = target.CalculateHourlyProductivity(new TimeSpan(9, 0, 0), new TimeSpan(18, 0, 0));
 
-            Assert.Equal(0.0, actual);
+            Assert.Equal(0.0, actualProductivity);
         }
 
-        [Theory()]
-        [MemberData(nameof(PackageInfoModelDataGenerator.GetPackagesForAverageSpeedWithTimeReference),
-            MemberType = typeof(PackageInfoModelDataGenerator))]
-        public void CalculateAverageSpeed_CalcutateAverageSpeedWithTimeReference(
-            IEnumerable<PackageInfoModel> packages, DateTimeOffset calculationTime, TimeSpan timeReference,
-            TimeSpan startWorkTime, TimeSpan endWorkTime, double expectedSpeed)
-        {
-            var actualSpeed = packages.CalculateAverageSpeed(startWorkTime, endWorkTime, calculationTime, timeReference);
-            Assert.Equal(expectedSpeed, actualSpeed);
-        }
 
         [Theory()]
-        [MemberData(nameof(PackageInfoModelDataGenerator.GetPackagesForAverageSpeed),
+        [MemberData(nameof(PackageInfoModelDataGenerator.GetPackagesForProductivity),
             MemberType = typeof(PackageInfoModelDataGenerator))]
-        public void CalculateAverageSpeed_CalcutateAverageSpeed(
+        public void CalculateHourlyProductivity_CalcutateAverageSpeed(
             IEnumerable<PackageInfoModel> packages, DateTimeOffset calculationTime,
-            TimeSpan startWorkTime, TimeSpan endWorkTime, double expectedSpeed)
+            TimeSpan startWorkTime, TimeSpan endWorkTime, double expectedHourlyProd,double expectedDailyProd)
         {
-            var actualSpeed = packages.CalculateAverageSpeed(startWorkTime, endWorkTime, calculationTime);
-            Assert.Equal(expectedSpeed, actualSpeed);
+            var actualProductivity = packages.CalculateHourlyProductivity(startWorkTime, endWorkTime, calculationTime);
+            Assert.Equal(expectedHourlyProd, actualProductivity);
+        }
+        #endregion
+
+        #region [ Method CalculateDailyProductivity]
+        [Fact]
+        public void CalculateDailyProductivity_ArgumentNull_ReturnZero()
+        {
+            IEnumerable<PackageInfoModel> target = null;
+
+            var actualProductivity = target.CalculateDailyProductivity(new TimeSpan(9, 0, 0), new TimeSpan(18, 0, 0));
+
+            Assert.Equal(0.0, actualProductivity);
+        }
+
+
+        [Theory()]
+        [MemberData(nameof(PackageInfoModelDataGenerator.GetPackagesForProductivity),
+            MemberType = typeof(PackageInfoModelDataGenerator))]
+        public void CalculateDailyProductivity_CalcutateAverageSpeed(
+            IEnumerable<PackageInfoModel> packages, DateTimeOffset calculationTime,
+            TimeSpan startWorkTime, TimeSpan endWorkTime, double expectedHourlyProd, double expectedDailyProd)
+        {
+            var actualProductivity= packages.CalculateDailyProductivity(startWorkTime, endWorkTime, calculationTime);
+            Assert.Equal(expectedDailyProd, actualProductivity);
         }
         #endregion
 

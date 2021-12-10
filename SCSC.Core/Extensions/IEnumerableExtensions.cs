@@ -28,34 +28,60 @@ namespace System.Collections.Generic
             return packagesInDay;
         }
 
-        public static double CalculateAverageSpeed(this IEnumerable<PackageInfoModel> packages, TimeSpan startworkTime,
-            TimeSpan endWorkTime, DateTimeOffset? calculationTime = null, TimeSpan? timeReference = null)
+        public static double CalculateHourlyProductivity(this IEnumerable<PackageInfoModel> packages,
+            TimeSpan startworkTime,
+            TimeSpan endWorkTime,
+            DateTimeOffset? calculationTime = null)
         {
             if (packages == null)
                 return 0;
 
-            var tNow = DateTimeOffset.UtcNow; // Time to calculate the average
-
-            if (calculationTime.HasValue)
-                tNow = calculationTime.Value;
-            if (!timeReference.HasValue)
-                timeReference = TimeSpan.FromHours(1);
-
-            var tStartCalc = tNow.Subtract(timeReference.Value); // Initial time to calculate the average
+            var tNow = calculationTime.HasValue ? calculationTime.Value : DateTimeOffset.UtcNow;
+            var tStartCalc = tNow.AddHours(-1);
             var tEnd = tNow.TimeOfDay < endWorkTime ? tNow.TimeOfDay : endWorkTime;
-            var tStart = tStartCalc.TimeOfDay < startworkTime ? startworkTime : tStartCalc.TimeOfDay;
+            var tStart = tStartCalc.TimeOfDay;
+            if (tStartCalc.TimeOfDay < startworkTime)
+            {
+                tStartCalc = new DateTimeOffset(tNow.Date.Year, tNow.Date.Month, tNow.Date.Day,
+                    startworkTime.Hours, startworkTime.Minutes, startworkTime.Seconds, TimeSpan.Zero).ToUniversalTime();
+                tStart = startworkTime;
+            }
 
             var packagesInTime = packages
-                .Where(p => p.StartTimestamp > tStartCalc)
-                .Where(p => p.EndTimestamp.HasValue && p.EndTimestamp.Value <= tNow);
+                .Where(p => !(p.StartTimestamp >=tNow ||
+                               p.EndTimestamp.HasValue && p.EndTimestamp.Value<=tStartCalc))
+                .Count();
 
-            var speed = packagesInTime.Count() / Math.Abs(tEnd.Subtract(tStart).TotalHours);
+            var productivity = packagesInTime * 3600 / tEnd.Subtract(tStart).TotalSeconds;
+            return Math.Round(productivity, 2);
+        }
 
-            return speed;
+        public static double CalculateDailyProductivity(this IEnumerable<PackageInfoModel> packages,
+            TimeSpan startworkTime,
+            TimeSpan endWorkTime,
+            DateTimeOffset? calculationTime = null)
+        {
+            if (packages == null)
+                return 0;
+
+            var tNow = calculationTime.HasValue ? calculationTime.Value : DateTimeOffset.UtcNow;
+            var tEnd = tNow.TimeOfDay < endWorkTime ? tNow.TimeOfDay : endWorkTime;
+            var tStart = startworkTime;
+            var tStartCalc = new DateTimeOffset(tNow.Date.Year, tNow.Date.Month, tNow.Date.Day,
+                startworkTime.Hours, startworkTime.Minutes, startworkTime.Seconds, TimeSpan.Zero).ToUniversalTime();
+            var workDayDuration = endWorkTime.Subtract(startworkTime).TotalSeconds;
+
+            var packagesInTime = packages
+                .Where(p => !(p.StartTimestamp >= tNow || 
+                                p.EndTimestamp.HasValue && p.EndTimestamp.Value <= tStartCalc))
+                .Count();
+
+            var productivity = packagesInTime * workDayDuration / tEnd.Subtract(tStart).TotalSeconds;
+            return Math.Round(productivity, 2);
         }
 
         public static IEnumerable<PackageInfoModel> ExtractOldItems(this IEnumerable<PackageInfoModel> packages,
-            DateTime? fromDate = null, int? maxSize = null)
+        DateTime? fromDate = null, int? maxSize = null)
         {
             if (packages == null)
                 throw new NullReferenceException(nameof(packages));

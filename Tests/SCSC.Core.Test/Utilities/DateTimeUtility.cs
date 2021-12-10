@@ -9,7 +9,7 @@ namespace SCSC.Core.Test.Utilities
         public static DateTimeOffset Create(int hour, int minute, int second)
         {
             var now = DateTime.Now;
-            return new DateTimeOffset(now.Year, now.Month, now.Day, hour, minute, second, new TimeSpan(+1, 0, 0));
+            return new DateTimeOffset(now.Year, now.Month, now.Day, hour, minute, second, new TimeSpan(0, 0, 0));
         }
     }
 }

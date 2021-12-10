@@ -103,8 +103,7 @@ namespace SCSC.PlatformFunctions.Entities
             {
                 if (this.Packages != null)
                 {
-                    hourProductivity = this.Packages.CalculateAverageSpeed(this.StartWorkTime,
-                    this.EndWorkTime, null, TimeSpan.FromHours(1));
+                    hourProductivity = this.Packages.CalculateHourlyProductivity(this.StartWorkTime,this.EndWorkTime);
                 }
                 else
                     hourProductivity = 0.0;

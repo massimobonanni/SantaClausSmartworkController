@@ -173,6 +173,153 @@ namespace SCSC.Core.Test.DataGenerators
             };
         }
 
+        public static IEnumerable<object[]> GetPackagesForProductivity()
+        {
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,1,0))
+                    },
+                DateTimeUtility.Create(9,30,0),
+                new TimeSpan(9,0,0),new TimeSpan(18,0,0),
+                2.0,18.0
+            };
+
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,1,0)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,33,0))
+                    },
+                DateTimeUtility.Create(9,35,0),
+                new TimeSpan(9,0,0),new TimeSpan(18,0,0),
+                3.43,30.86
+            };
+
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,1,0)),
+                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeUtility.Create(9,33,0))
+                    },
+                DateTimeUtility.Create(9,35,0),
+                new TimeSpan(9,0,0),new TimeSpan(18,0,0),
+                3.43,30.86
+            };
+
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,1,0)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,33,0))
+                    },
+                DateTimeUtility.Create(10,0,0),
+                new TimeSpan(9,0,0),new TimeSpan(18,0,0),
+                2.00,18.00
+            };
+
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,1,0)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,33,0)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,40,0))
+                    },
+                DateTimeUtility.Create(10,0,0),
+                new TimeSpan(9,0,0),new TimeSpan(18,0,0),
+                3.00,27.00
+            };
+
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,1,0)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,33,0)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,40,0)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(10,00,0)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(10,35,0))
+                    },
+                DateTimeUtility.Create(10,34,0),
+                new TimeSpan(9,0,0),new TimeSpan(18,0,0),
+                2.00,22.98
+            };
+
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,1,0)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,33,0)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,40,0)),
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(10,00,0)),
+                        PackageInfoModelUtility.GenerateOpenedPackage(DateTimeUtility.Create(10,35,0))
+                    },
+                DateTimeUtility.Create(10,34,0),
+                new TimeSpan(9,0,0),new TimeSpan(18,0,0),
+                2.00,22.98
+            };
+
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,1,0))
+                    },
+                DateTimeUtility.Create(10,40,0),
+                new TimeSpan(9,0,0),new TimeSpan(18,0,0),
+                0,5.4
+            };
+
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,39,0),300)
+                    },
+                DateTimeUtility.Create(10,40,0),
+                new TimeSpan(9,0,0),new TimeSpan(18,0,0),
+                1,5.4
+            };
+
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(9,41,0),300)
+                    },
+                DateTimeUtility.Create(10,40,0),
+                new TimeSpan(9,0,0),new TimeSpan(18,0,0),
+                1,5.4
+            };
+
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(10,35,0),600)
+                    },
+                DateTimeUtility.Create(10,40,0),
+                new TimeSpan(9,0,0),new TimeSpan(18,0,0),
+                1,5.4
+            };
+
+            yield return new object[]
+            {
+                new List<PackageInfoModel>()
+                    {
+                        PackageInfoModelUtility.GenerateClosedPackage(DateTimeUtility.Create(10,45,0),600)
+                    },
+                DateTimeUtility.Create(10,40,0),
+                new TimeSpan(9,0,0),new TimeSpan(18,0,0),
+                0,0
+            };
+        }
         public static IEnumerable<object[]> GetPackagesForPackagesInDay()
         {
             yield return new object[]
