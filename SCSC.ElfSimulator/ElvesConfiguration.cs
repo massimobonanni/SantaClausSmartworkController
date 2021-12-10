@@ -3,10 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace SCSC.ElfSimulator
 {
-    public class ElfsConfiguration
+    public class ElvesConfiguration
     {
-        [JsonPropertyName("elfs")]
-        public IEnumerable<ElfConfiguration> Elfs { get; set; }
+        [JsonPropertyName("elves")]
+        public IEnumerable<ElfConfiguration> Elves { get; set; }
 
         [JsonPropertyName("apiBaseUrl")]
         public string ApiBaseUrl { get; set; }

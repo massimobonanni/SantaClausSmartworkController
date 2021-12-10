@@ -1,10 +1,10 @@
 ﻿@using SCSC.AdminWeb.Models.Elfs
 @model IndexViewModel
 @{
-    ViewData["Title"] = "Elfs Management";
+    ViewData["Title"] = "Elves Management";
 }
 
-<h2>Elfs Management</h2>
+<h2>Elves Management</h2>
 <br />
 <form class="border">
     <div class="form-row m-2">
@@ -31,7 +31,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Elfs)
+        @foreach (var item in Model.Elves)
         {
             <tr>
                 <td>@item.Name</td>

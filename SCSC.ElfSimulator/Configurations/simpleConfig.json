@@ -1,6 +1,6 @@
 ﻿{
   "apiBaseUrl": "http://localhost:7071",
-  "elfs": [
+  "elves": [
     {
       "id": "alabaster_snowball",
       "name": "Alabaster Snowball",

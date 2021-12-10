@@ -34,12 +34,12 @@ namespace SCSC.PlatformFunctions
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK,
             contentType: "json",
             bodyType: typeof(List<PackageDetailModel>),
-            Summary = "The full list of elfs")]
+            Summary = "The full list of packages")]
         [OpenApiParameter(name: "elfname",
             In = ParameterLocation.Query,
             Type = typeof(string),
             Summary = "Filter packages by elf name",
-            Description = "Retrieve the packages managed by the elfs with the specific name.")]
+            Description = "Retrieve the packages managed by the elf with the specific name.")]
         [OpenApiParameter(name: "from",
             In = ParameterLocation.Query,
             Type = typeof(string),

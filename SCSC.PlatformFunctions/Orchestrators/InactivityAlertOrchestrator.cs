@@ -81,7 +81,7 @@ namespace SCSC.PlatformFunctions.Orchestrators
                 var lastUpdate = await context.CallEntityAsync<DateTimeOffset?>(elfEntityId, nameof(IElfEntity.GetLastUpdate));
                 if (lastUpdate.HasValue)
                 {
-                    var inactivityMinutes = DateTimeOffset.Now.Subtract(lastUpdate.Value).TotalMinutes;
+                    var inactivityMinutes = context.CurrentUtcDateTime.Subtract(lastUpdate.Value.ToUniversalTime().DateTime).TotalMinutes;
                     if (alertInfo.MaxInactivityTimeInMinutes < inactivityMinutes)
                     {
                         logger.LogInformation($"Productivity threshold reached for elf {createAlertInfo.ElfId}", createAlertInfo);

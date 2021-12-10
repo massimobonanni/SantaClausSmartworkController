@@ -21,7 +21,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
 
             var notification = new AlertNotificationActivity.SmsInfoModel();
             var message = new StringBuilder();
-            message.Append($"The alert {createAlertInfo.AlertName} is fired for the elf {createAlertInfo.ElfId} at {DateTimeOffset.Now.ToUniversalTime()}.");
+            message.Append($"The alert {createAlertInfo.AlertName} is fired for the elf {createAlertInfo.ElfId} at {context.CurrentUtcDateTime}.");
             if (extendedMessage != null)
                 message.Append($" {extendedMessage}");
             notification.Message = message.ToString();
@@ -42,7 +42,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
             notification.From = emailFrom;
             notification.Subject = $"Alert for elf {createAlertInfo.ElfId}";
             var body = new StringBuilder();
-            body.Append($"The alert {createAlertInfo.AlertName} is fired for the elf {createAlertInfo.ElfId} at {DateTimeOffset.Now.ToUniversalTime()}.");
+            body.Append($"The alert {createAlertInfo.AlertName} is fired for the elf {createAlertInfo.ElfId} at {context.CurrentUtcDateTime}.");
             if (extendedMessage != null)
                 body.Append($" {extendedMessage}");
             notification.Body = body.ToString();

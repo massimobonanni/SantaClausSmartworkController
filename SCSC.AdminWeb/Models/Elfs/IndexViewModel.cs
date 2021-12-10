@@ -7,6 +7,6 @@ namespace SCSC.AdminWeb.Models.Elfs
     {
         public string FilterName { get; set; }
 
-        public IEnumerable<ElfInfoViewModel> Elfs { get; set; }
+        public IEnumerable<ElfInfoViewModel> Elves { get; set; }
     }
 }

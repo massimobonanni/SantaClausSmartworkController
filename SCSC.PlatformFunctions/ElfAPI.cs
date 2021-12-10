@@ -196,29 +196,29 @@ namespace SCSC.PlatformFunctions
         }
 
         #region Open API Definition
-        [OpenApiOperation(operationId: "getelfs",
-            Summary = "Get the list of elfs.",
+        [OpenApiOperation(operationId: "getelves",
+            Summary = "Get the list of elves.",
             Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK,
             contentType: "json",
             bodyType: typeof(List<ElfInfoModel>),
-            Summary = "The full list of elfs")]
+            Summary = "The full list of elves")]
         [OpenApiParameter(name: "name",
             In = ParameterLocation.Query,
             Type = typeof(string),
             Summary = "Filter elves by name.",
             Description = "Retrieve only elves that have the value set in the name.")]
         #endregion Open API Definition
-        [FunctionName(nameof(GetElfs))]
-        public async Task<IActionResult> GetElfs(
+        [FunctionName(nameof(GetElves))]
+        public async Task<IActionResult> GetElves(
            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "elfs")] HttpRequest req,
            [DurableClient] IDurableEntityClient client,
            ILogger logger)
         {
             var result = new List<ElfInfoModel>();
 
-            var filters = GetElfsFilters.CreateFromHttpRequest(req);
+            var filters = GetElvesFilters.CreateFromHttpRequest(req);
 
             EntityQuery queryDefinition = new EntityQuery()
             {

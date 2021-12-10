@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace SCSC.APIClient
 {
-    public class ElfsRestClient : RestClientBase
+    public class ElvesRestClient : RestClientBase
     {
-        public ElfsRestClient(HttpClient httpClient, string baseUrl, string apiKey) :
+        public ElvesRestClient(HttpClient httpClient, string baseUrl, string apiKey) :
             base(httpClient, baseUrl, apiKey)
         {
         }
 
         protected override string DefaultApiEndpoint => "api/elfs";
 
-        public async Task<IEnumerable<ElfInfoModel>> GetElfsAsync(string filterName, CancellationToken token)
+        public async Task<IEnumerable<ElfInfoModel>> GetElvesAsync(string filterName, CancellationToken token)
         {
             string query = string.Empty;
             if (!string.IsNullOrEmpty(filterName))
@@ -37,8 +37,8 @@ namespace SCSC.APIClient
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var elfs = JsonConvert.DeserializeObject<List<ElfInfoModel>>(content);
-                return elfs;
+                var elves = JsonConvert.DeserializeObject<List<ElfInfoModel>>(content);
+                return elves;
             }
             return null;
         }

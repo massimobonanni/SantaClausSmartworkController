@@ -12,13 +12,13 @@ namespace SCSC.ElfSimulator
         [Option(
             'f',
             "ConfigFile",
-            HelpText = "JSON File contains the elfs configuration")]
+            HelpText = "JSON File contains the elves configuration")]
         public string ConfigFilePath { get; set; }
 
         [Option(
             'b',
             "BlobUrl",
-            HelpText = "Url for the blob contains JSON configuration for the devices")]
+            HelpText = "Url for the blob contains JSON configuration for the elves")]
         public string BlobUrl { get; set; }
 
         public bool IsValid()

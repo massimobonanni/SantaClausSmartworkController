@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace SCSC.AdminWeb.Controllers
 {
-    public class ElfsController : Controller
+    public class ElvesController : Controller
     {
-        private readonly ElfsRestClient elfsRestClient;
+        private readonly ElvesRestClient elvesRestClient;
 
-        public ElfsController(ElfsRestClient elfsRestClient)
+        public ElvesController(ElvesRestClient elvesRestClient)
         {
-            this.elfsRestClient = elfsRestClient;
+            this.elvesRestClient = elvesRestClient;
         }
 
         public async Task<ActionResult> Index([FromQuery(Name = "filterName")] string filterName,
@@ -23,9 +23,9 @@ namespace SCSC.AdminWeb.Controllers
         {
             var model = new IndexViewModel() { FilterName = filterName };
 
-            var elfs = await this.elfsRestClient.GetElfsAsync(filterName, token);
+            var elves = await this.elvesRestClient.GetElvesAsync(filterName, token);
 
-            model.Elfs = elfs.Select(e => new ElfInfoViewModel(e)).OrderBy(e => e.Name);
+            model.Elves = elves.Select(e => new ElfInfoViewModel(e)).OrderBy(e => e.Name);
 
             return View(model);
         }
@@ -33,7 +33,7 @@ namespace SCSC.AdminWeb.Controllers
         public async Task<ActionResult> Details(string id,
          CancellationToken token)
         {
-            var elf = await this.elfsRestClient.GetElfAsync(id, token);
+            var elf = await this.elvesRestClient.GetElfAsync(id, token);
             if (elf == null)
             {
                 return this.NotFound();

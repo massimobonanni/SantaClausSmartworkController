@@ -18,7 +18,7 @@ namespace SCSC.ElfSimulator
 
         private static Random rand = new Random(DateTime.Now.Millisecond);
 
-        private static ElfsRestClient restClient;
+        private static ElvesRestClient restClient;
 
         static async Task Main(string[] args)
         {
@@ -36,10 +36,10 @@ namespace SCSC.ElfSimulator
                 Environment.Exit(1);
 
             WriteLog("Elf Simulator!");
-            ElfsConfiguration config = await ReadConfigurationAsync(_parameters);
+            ElvesConfiguration config = await ReadConfigurationAsync(_parameters);
 
             using var httpClient = new HttpClient();
-            restClient = new ElfsRestClient(httpClient, config.ApiBaseUrl, config.ApiKey);
+            restClient = new ElvesRestClient(httpClient, config.ApiBaseUrl, config.ApiKey);
 
             WriteLog("Press control-C to exit.");
 
@@ -53,7 +53,7 @@ namespace SCSC.ElfSimulator
             };
 
             var tasks = new List<Task>();
-            foreach (var elf in config.Elfs)
+            foreach (var elf in config.Elves)
             {
                 tasks.Add(SimulateElfActivitiesAsync(elf, cts.Token));
                 await Task.Delay(rand.Next(125, 2000));
@@ -62,9 +62,9 @@ namespace SCSC.ElfSimulator
             Task.WaitAll(tasks.ToArray());
         }
 
-        private static async Task<ElfsConfiguration> ReadConfigurationAsync(Parameters parameters)
+        private static async Task<ElvesConfiguration> ReadConfigurationAsync(Parameters parameters)
         {
-            ElfsConfiguration config = null;
+            ElvesConfiguration config = null;
             if (_parameters.IsFileConfig())
             {
                 config = await ReadFromFileConfigAsync(parameters);
@@ -77,7 +77,7 @@ namespace SCSC.ElfSimulator
             return config;
         }
 
-        private static async Task<ElfsConfiguration> ReadFromBlobStorageAsync(Parameters parameters)
+        private static async Task<ElvesConfiguration> ReadFromBlobStorageAsync(Parameters parameters)
         {
             WriteLog($"Reading configuration from blob '{parameters.BlobUrl}'");
 
@@ -86,16 +86,16 @@ namespace SCSC.ElfSimulator
             using (var client = new HttpClient())
             {
                 var configFile = await client.GetStringAsync(uri);
-                return JsonSerializer.Deserialize<ElfsConfiguration>(configFile);
+                return JsonSerializer.Deserialize<ElvesConfiguration>(configFile);
             }
         }
 
-        private static async Task<ElfsConfiguration> ReadFromFileConfigAsync(Parameters parameters)
+        private static async Task<ElvesConfiguration> ReadFromFileConfigAsync(Parameters parameters)
         {
             WriteLog($"Reading configuration from file '{parameters.ConfigFilePath}'");
 
             var configFile = await File.ReadAllTextAsync(parameters.ConfigFilePath);
-            return JsonSerializer.Deserialize<ElfsConfiguration>(configFile);
+            return JsonSerializer.Deserialize<ElvesConfiguration>(configFile);
         }
 
         private static object _logSyncObject = new object();

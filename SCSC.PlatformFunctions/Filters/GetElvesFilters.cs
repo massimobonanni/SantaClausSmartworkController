@@ -6,18 +6,18 @@ using System.Text;
 
 namespace SCSC.PlatformFunctions.Filters
 {
-    public class GetElfsFilters
+    public class GetElvesFilters
     {
         public string ElfNameFilter { get; set; }
 
         
 
-        public static GetElfsFilters CreateFromHttpRequest(HttpRequest req)
+        public static GetElvesFilters CreateFromHttpRequest(HttpRequest req)
         {
             if (req == null)
                 throw new ArgumentNullException(nameof(req));
 
-            var filter = new GetElfsFilters();
+            var filter = new GetElvesFilters();
 
             filter.ElfNameFilter = req.Query["name"];
 

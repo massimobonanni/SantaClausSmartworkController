@@ -13,12 +13,12 @@ namespace SCSC.AdminWeb.Controllers
     public class AlertsController : Controller
     {
         private readonly AlertsRestClient alertsRestClient;
-        private readonly ElfsRestClient elfsRestClient;
+        private readonly ElvesRestClient elvesRestClient;
 
-        public AlertsController(AlertsRestClient alertsRestClient, ElfsRestClient elfsRestClient)
+        public AlertsController(AlertsRestClient alertsRestClient, ElvesRestClient elvesRestClient)
         {
             this.alertsRestClient = alertsRestClient;
-            this.elfsRestClient = elfsRestClient;
+            this.elvesRestClient = elvesRestClient;
         }
 
         public async Task<ActionResult> Index([FromQuery(Name = "elfId")] string elfId,
@@ -49,11 +49,11 @@ namespace SCSC.AdminWeb.Controllers
         public async Task<ActionResult> Create(string elfId, CancellationToken token)
         {
             var model = new CreateViewModel();
-            var elfs = await this.elfsRestClient.GetElfsAsync(null, token);
+            var elves = await this.elvesRestClient.GetElvesAsync(null, token);
             model.ElfIds = new List<SelectListItem>();
             model.ElfIds.Add(new SelectListItem("Select elf", string.Empty));
-            model.ElfIds.AddRange(elfs.Select(e => new SelectListItem(e.Name, e.Id)).OrderBy(i => i.Text));
-            if (elfs.Any(e => e.Id == elfId))
+            model.ElfIds.AddRange(elves.Select(e => new SelectListItem(e.Name, e.Id)).OrderBy(i => i.Text));
+            if (elves.Any(e => e.Id == elfId))
                 model.ElfId = elfId;
             return View(model);
         }
@@ -82,11 +82,11 @@ namespace SCSC.AdminWeb.Controllers
 
             }
 
-            var elfs = await this.elfsRestClient.GetElfsAsync(null, token);
+            var elves = await this.elvesRestClient.GetElvesAsync(null, token);
 
             alertModel.ElfIds = new List<SelectListItem>();
             alertModel.ElfIds.Add(new SelectListItem("Select elf", string.Empty));
-            alertModel.ElfIds.AddRange(elfs.Select(e => new SelectListItem(e.Name, e.Id)).OrderBy(i => i.Text));
+            alertModel.ElfIds.AddRange(elves.Select(e => new SelectListItem(e.Name, e.Id)).OrderBy(i => i.Text));
             return View(alertModel);
         }
 

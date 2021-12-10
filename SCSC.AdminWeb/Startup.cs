@@ -31,10 +31,10 @@ namespace SCSC.AdminWeb
             services.AddControllersWithViews();
 
             services.AddHttpClient();
-            services.AddTransient<ElfsRestClient>(provider => {
+            services.AddTransient<ElvesRestClient>(provider => {
                 var httpClientFactory = provider.GetService<IHttpClientFactory>();
                 var httpClient = httpClientFactory.CreateClient();
-                return new ElfsRestClient(httpClient, baseUrl, apiKey);
+                return new ElvesRestClient(httpClient, baseUrl, apiKey);
             });
             services.AddTransient<AlertsRestClient>(provider => {
                 var httpClientFactory = provider.GetService<IHttpClientFactory>();
