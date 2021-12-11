@@ -50,7 +50,7 @@ namespace SCSC.PlatformFunctions
         #endregion Open API Definition
         [FunctionName(nameof(PackageStarted))]
         public async Task<IActionResult> PackageStarted(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "elfs/{elfId}/packagestarted")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "elves/{elfId}/packagestarted")] HttpRequest req,
             string elfId,
             [DurableClient] IDurableEntityClient client,
             ILogger logger)
@@ -82,7 +82,7 @@ namespace SCSC.PlatformFunctions
         #endregion Open API Definition
         [FunctionName(nameof(PackageEnded))]
         public async Task<IActionResult> PackageEnded(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "elfs/{elfId}/packageended")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "elves/{elfId}/packageended")] HttpRequest req,
             string elfId,
             [DurableClient] IDurableEntityClient client,
             ILogger logger)
@@ -117,7 +117,7 @@ namespace SCSC.PlatformFunctions
         #endregion Open API Definition
         [FunctionName(nameof(CreateElf))]
         public async Task<IActionResult> CreateElf(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "elfs")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "elves")] HttpRequest req,
             [DurableClient] IDurableEntityClient client,
             ILogger logger)
         {
@@ -152,7 +152,7 @@ namespace SCSC.PlatformFunctions
         #endregion Open API Definition
         [FunctionName(nameof(UpdateElf))]
         public async Task<IActionResult> UpdateElf(
-            [HttpTrigger(AuthorizationLevel.Function, "put", Route = "elfs/{elfId}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "put", Route = "elves/{elfId}")] HttpRequest req,
             string elfId,
             [DurableClient] IDurableEntityClient client,
             ILogger logger)
@@ -183,7 +183,7 @@ namespace SCSC.PlatformFunctions
         #endregion Open API Definition
         [FunctionName(nameof(DeleteElf))]
         public async Task<IActionResult> DeleteElf(
-            [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "elfs/{elfId}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "elves/{elfId}")] HttpRequest req,
             string elfId,
             [DurableClient] IDurableEntityClient client,
             ILogger logger)
@@ -212,7 +212,7 @@ namespace SCSC.PlatformFunctions
         #endregion Open API Definition
         [FunctionName(nameof(GetElves))]
         public async Task<IActionResult> GetElves(
-           [HttpTrigger(AuthorizationLevel.Function, "get", Route = "elfs")] HttpRequest req,
+           [HttpTrigger(AuthorizationLevel.Function, "get", Route = "elves")] HttpRequest req,
            [DurableClient] IDurableEntityClient client,
            ILogger logger)
         {
@@ -273,7 +273,7 @@ namespace SCSC.PlatformFunctions
         #endregion Open API Definition
         [FunctionName(nameof(GetElf))]
         public async Task<IActionResult> GetElf(
-           [HttpTrigger(AuthorizationLevel.Function, "get", Route = "elfs/{elfId}")] HttpRequest req,
+           [HttpTrigger(AuthorizationLevel.Function, "get", Route = "elves/{elfId}")] HttpRequest req,
            string elfId,
            [DurableClient] IDurableEntityClient client,
            ILogger logger)

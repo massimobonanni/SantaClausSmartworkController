@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SCSC.AdminWeb.Models.Elfs;
+using SCSC.AdminWeb.Models.Elves;
 using SCSC.APIClient;
 using SCSC.Core.Models;
 using System.Linq;

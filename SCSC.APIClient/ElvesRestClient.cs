@@ -17,7 +17,7 @@ namespace SCSC.APIClient
         {
         }
 
-        protected override string DefaultApiEndpoint => "api/elfs";
+        protected override string DefaultApiEndpoint => "api/elves";
 
         public async Task<IEnumerable<ElfInfoModel>> GetElvesAsync(string filterName, CancellationToken token)
         {
@@ -45,7 +45,7 @@ namespace SCSC.APIClient
 
         public async Task<ElfInfoModel> GetElfAsync(string elfId, CancellationToken token)
         {
-            var uri = this.CreateAPIUri(null, $"api/elfs/{elfId}");
+            var uri = this.CreateAPIUri(null, $"{DefaultApiEndpoint}/{elfId}");
 
             var response = await this._httpClient.GetAsync(uri, token);
             if (response.IsSuccessStatusCode)
@@ -64,7 +64,7 @@ namespace SCSC.APIClient
             if (package == null)
                 throw new ArgumentNullException(nameof(package));
 
-            var uri = this.CreateAPIUri(null, $"api/elfs/{elfId}/packagestarted");
+            var uri = this.CreateAPIUri(null, $"{DefaultApiEndpoint}/{elfId}/packagestarted");
 
             string packageJson = JsonConvert.SerializeObject(package, Formatting.None);
 
@@ -82,7 +82,7 @@ namespace SCSC.APIClient
             if (package == null)
                 throw new ArgumentNullException(nameof(package));
 
-            var uri = this.CreateAPIUri(null, $"api/elfs/{elfId}/packageended");
+            var uri = this.CreateAPIUri(null, $"{DefaultApiEndpoint}/{elfId}/packageended");
 
             string packageJson = JsonConvert.SerializeObject(package, Formatting.None);
 
@@ -101,7 +101,7 @@ namespace SCSC.APIClient
             if (string.IsNullOrWhiteSpace(newElf.ElfId))
                 newElf.ElfId = newElf.Configuration.Name.ToLower().Replace(' ', '_');
 
-            var uri = this.CreateAPIUri(null, $"api/elfs");
+            var uri = this.CreateAPIUri(null, $"{DefaultApiEndpoint}");
 
             string packageJson = JsonConvert.SerializeObject(newElf, Formatting.None);
 
@@ -119,7 +119,7 @@ namespace SCSC.APIClient
             if (updatedElf == null)
                 throw new ArgumentNullException(nameof(updatedElf));
 
-            var uri = this.CreateAPIUri(null, $"api/elfs/{elfId}");
+            var uri = this.CreateAPIUri(null, $"{DefaultApiEndpoint}/{elfId}");
 
             string packageJson = JsonConvert.SerializeObject(updatedElf, Formatting.None);
 

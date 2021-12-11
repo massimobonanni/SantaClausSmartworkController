@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SCSC.AdminWeb.Models.Elfs
+namespace SCSC.AdminWeb.Models.Elves
 {
     public class ElfInfoViewModel
     {

@@ -1,7 +1,7 @@
 ﻿using SCSC.Core.Models;
 using System.Collections.Generic;
 
-namespace SCSC.AdminWeb.Models.Elfs
+namespace SCSC.AdminWeb.Models.Elves
 {
     public class IndexViewModel
     {
